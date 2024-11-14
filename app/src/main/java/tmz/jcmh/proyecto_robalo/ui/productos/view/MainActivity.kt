@@ -1,6 +1,7 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.view
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -89,6 +90,12 @@ class MainActivity : AppCompatActivity() {
         /*binding.btnReadDb.setOnClickListener(){
             consultarProductos()
         }*/
+
+        binding.btnAdd.setOnClickListener(){
+            val intent = Intent(this, AddProducto::class.java)
+            startActivity(intent)
+            setupRecyclerView()
+        }
 
         consultarProductos()
     }
