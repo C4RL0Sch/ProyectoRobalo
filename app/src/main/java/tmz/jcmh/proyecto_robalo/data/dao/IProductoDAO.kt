@@ -1,5 +1,6 @@
 package tmz.jcmh.proyecto_robalo.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,18 +13,25 @@ import tmz.jcmh.proyecto_robalo.data.models.Producto
 interface IProductoDAO {
 
     @Query("SELECT * FROM Productos")
-    suspend fun getAll():List<Producto>
-
+    fun getAll():LiveData<List<Producto>>
 
     //TODO Colocar este metodo en el reporte
     @Query("SELECT * FROM Productos WHERE idProducto = :id")
     suspend fun getById(id:Int):Producto
+
+    //TODO Colocar este metodo en el reporte
+    @Query("SELECT * FROM Productos WHERE Codigo = :codigo")
+    suspend fun getByCode(codigo:String):Producto
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(productos:List<Producto>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(producto: Producto)
+
+    //TODO Colocar este metodo en el reporte
+    @Query("SELECT COUNT(*) FROM Productos WHERE Codigo = :codigo")
+    suspend fun CountByCodigo(codigo: String): Int
 
     @Update
     suspend fun UpdateAll(productos:List<Producto>)

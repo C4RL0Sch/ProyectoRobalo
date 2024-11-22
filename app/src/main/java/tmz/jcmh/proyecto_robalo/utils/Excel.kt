@@ -97,10 +97,12 @@ class Excel {
                 }
                 listaNueva.add(
                     Producto(
+                        0,
                         lista[0],
                         lista[1],
-                        lista[2].toDouble(),
-                        lista[3].toInt()
+                        lista[2],
+                        lista[3].toDouble(),
+                        lista[4].toInt()
                     )
                 )
                 lista.clear()

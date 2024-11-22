@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Proyecto_Robalo"
         tools:targetApi="31">
         <activity
+            android:name=".ui.productos.view.EditProducto"
+            android:exported="false" />
+        <activity
             android:name=".ui.productos.view.AddProducto"
             android:exported="false" />
         <activity

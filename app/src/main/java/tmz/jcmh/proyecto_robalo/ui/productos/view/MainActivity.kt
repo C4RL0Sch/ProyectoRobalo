@@ -6,35 +6,29 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
-import kotlinx.coroutines.launch
-import tmz.jcmh.proyecto_robalo.data.database.Database
-import tmz.jcmh.proyecto_robalo.data.models.Producto
-import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.adapter.ProductoAdapter
+import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import tmz.jcmh.proyecto_robalo.utils.Excel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ProductoAdapter
+    private val productoViewModel: ProductosViewModel by viewModels()
 
-    //instancias de la base de datos
-    private val db = Room.databaseBuilder(this, Database::class.java, "db_robalo").build()
-    private val daoProductos = db.daoProductos
-    private val repository = ProductoRepository(daoProductos)
-
-    private var listaRegistros = listOf<Producto>()
+    //private lateinit var listaRegistros: LiveData<List<Producto>>()
     private lateinit var Excel:Excel
     private lateinit var solicitarPermisos: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        Excel = Excel()
         setContentView(binding.root)
+        Excel = Excel()
 
         solicitarPermisos = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
             val aceptados = it.all{ it.value }
@@ -44,6 +38,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         permisos()
+
+        //setupRecyclerView()
+        adapter = ProductoAdapter(emptyList())
+
+        productoViewModel.allProductos.observe(this, Observer {
+            adapter.UpdateList(it)
+            binding.rvListaRegistros.adapter = adapter
+        })
+
+        binding.btnAdd.setOnClickListener(){
+            val intent = Intent(this, AddProducto::class.java)
+            startActivity(intent)
+            Toast.makeText(this,"HEMOS VUELTOOOO",Toast.LENGTH_LONG)
+            //setupRecyclerView()
+        }
 
         /*binding.btnAdd.setOnClickListener(){
             val lista=listaRegistros.toMutableList()
@@ -90,19 +99,6 @@ class MainActivity : AppCompatActivity() {
         /*binding.btnReadDb.setOnClickListener(){
             consultarProductos()
         }*/
-
-        binding.btnAdd.setOnClickListener(){
-            val intent = Intent(this, AddProducto::class.java)
-            startActivity(intent)
-            setupRecyclerView()
-        }
-
-        consultarProductos()
-    }
-
-    fun setupRecyclerView(){
-        adapter = ProductoAdapter(listaRegistros)
-        binding.rvListaRegistros.adapter = adapter
     }
 
     fun permisos(){
@@ -114,16 +110,16 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun insertarProducto(producto: Producto){
+    /*fun insertarProducto(producto: Producto){
         lifecycleScope.launch {
             repository.insert(producto)
         }
-    }
+    }*/
 
-    fun consultarProductos(){
+    /*fun consultarProductos(){
         lifecycleScope.launch {
             listaRegistros = repository.getAll()
             setupRecyclerView()
         }
-    }
+    }*/
 }
