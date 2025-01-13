@@ -10,6 +10,10 @@ class ProductoRepository(private val daoProductos: IProductoDAO) {
         return daoProductos.getAll()
     }
 
+    fun getAllNow(): List<Producto> {
+        return daoProductos.getAllNow()
+    }
+
     suspend fun getById(id: Int): Producto {
         return daoProductos.getById(id)
     }

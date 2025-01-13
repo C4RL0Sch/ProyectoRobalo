@@ -15,6 +15,9 @@ interface IProductoDAO {
     @Query("SELECT * FROM Productos")
     fun getAll():LiveData<List<Producto>>
 
+    @Query("SELECT * FROM Productos")
+    fun getAllNow():List<Producto>
+
     //TODO Colocar este metodo en el reporte
     @Query("SELECT * FROM Productos WHERE idProducto = :id")
     suspend fun getById(id:Int):Producto

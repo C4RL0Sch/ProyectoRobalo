@@ -63,4 +63,7 @@ dependencies {
     // Para soporte de coroutines
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+
+    //PARA MENEJO DE FRAGMENTOS
+    implementation("androidx.fragment:fragment:1.8.5")
 }

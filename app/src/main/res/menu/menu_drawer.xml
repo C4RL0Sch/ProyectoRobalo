@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Productos">
+        <menu>
+            <group android:title="Productos">
+                <item
+                    android:id="@+id/nav_export"
+                    android:title="Exportar a Excel"
+                    android:icon="@drawable/ic_export"/>
+                <item
+                    android:id="@+id/nav_import"
+                    android:title="Importar de Excel"
+                    android:icon="@drawable/ic_import"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>

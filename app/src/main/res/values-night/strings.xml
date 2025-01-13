@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Gestor de Productos</string>
     <string name="open_drawer">Drawer Abierto</string>
     <string name="close_drawer">Drawer Cerrado</string>
 </resources>

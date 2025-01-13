@@ -3,13 +3,22 @@ package tmz.jcmh.proyecto_robalo.ui.productos.view
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.navigation.NavigationView
+import tmz.jcmh.proyecto_robalo.MyApp
+import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.adapter.ProductoAdapter
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
@@ -17,18 +26,51 @@ import tmz.jcmh.proyecto_robalo.utils.Excel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: ProductoAdapter
-    private val productoViewModel: ProductosViewModel by viewModels()
+    private lateinit var drawerLayout: DrawerLayout
 
-    //private lateinit var listaRegistros: LiveData<List<Producto>>()
-    private lateinit var Excel:Excel
+    private lateinit var adapter: ProductoAdapter
+    val productoViewModel: ProductosViewModel
+        get() = (application as MyApp).productoViewModel
+
     private lateinit var solicitarPermisos: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Excel = Excel()
+
+        // Referencia al DrawerLayout
+        drawerLayout = binding.drawerLayout
+
+        val navigationView: NavigationView = binding.navigationView
+
+        // Configurar el icono de menú y sincronizar el estado del drawer
+        val toolbar: MaterialToolbar = binding.topAppBar
+        setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navigationView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_export -> {
+                    // Acción para el ítem "Exportar"
+                    if(productoViewModel.allProductos.value?.toMutableList() == null){
+                        Toast.makeText(this, "NO HAY REGISTROS", Toast.LENGTH_LONG).show()
+                        return@setNavigationItemSelectedListener true
+                    }
+
+                    createFileLauncher.launch("registros.xlsx")
+                }
+                R.id.nav_import -> {
+                    // Acción para el ítem "Importar"
+                    selectFileLauncher.launch(arrayOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                }
+                // Maneja otros ítems
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
 
         solicitarPermisos = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
             val aceptados = it.all{ it.value }
@@ -39,7 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         permisos()
 
-        //setupRecyclerView()
         adapter = ProductoAdapter(emptyList())
 
         productoViewModel.allProductos.observe(this, Observer {
@@ -47,58 +88,34 @@ class MainActivity : AppCompatActivity() {
             binding.rvListaRegistros.adapter = adapter
         })
 
+        productoViewModel.mensaje.observe(this) { msj ->
+            Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+        }
+
+        productoViewModel.lecturaFinalizada.observe(this) { finalizada ->
+            if (finalizada) {
+                // Abrir la pantalla del preview
+                val intent = Intent(this, ImportActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         binding.btnAdd.setOnClickListener(){
             val intent = Intent(this, AddProducto::class.java)
             startActivity(intent)
-            Toast.makeText(this,"HEMOS VUELTOOOO",Toast.LENGTH_LONG)
-            //setupRecyclerView()
         }
+    }
 
-        /*binding.btnAdd.setOnClickListener(){
-            val lista=listaRegistros.toMutableList()
+    private val createFileLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) { uri ->
+        uri?.let {
+            productoViewModel.exportarExcel(it, contentResolver)
+        }
+    }
 
-            val nuevo = Producto(
-                null,
-                binding.txtNombre.text.toString(),
-                binding.txtPresentacion.text.toString(),
-                binding.txtPrecio.text.toString().toDouble(),
-                binding.txtCantidad.text.toString().toInt(),
-            )
-
-            if(nuevo.Nombre.isEmpty() || nuevo.Presentacion.isEmpty() ||
-                nuevo.Precio.toString().isEmpty() || nuevo.Cantidad.toString().isEmpty()){
-                Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_LONG).show()
-            }else{
-                listaRegistros=lista
-                binding.txtNombre.setText("")
-                binding.txtPresentacion.setText("")
-                binding.txtPrecio.setText("")
-                binding.txtCantidad.setText("")
-
-                lista.add(nuevo)
-                setupRecyclerView()
-                insertarProducto(nuevo)
-            }
-        }*/
-
-        /*binding.btnSave.setOnClickListener(){
-            if(listaRegistros.isNotEmpty()){
-                Excel.crearExcel(listaRegistros.toMutableList())
-                Toast.makeText(this, "SE GUARDO EL ARCHIVO CORRECTAMENTE", Toast.LENGTH_LONG).show()
-            }
-            else{
-                Toast.makeText(this, "NO HAY NINGUN REGISTRO PARA GUARDAR", Toast.LENGTH_LONG).show()
-            }
-        }*/
-
-        /*binding.btnRead.setOnClickListener(){
-            listaRegistros=Excel.leerExcel()
-            setupRecyclerView()
-        }*/
-
-        /*binding.btnReadDb.setOnClickListener(){
-            consultarProductos()
-        }*/
+    private val selectFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let {
+            productoViewModel.importarExcel(it, contentResolver)
+        }
     }
 
     fun permisos(){
@@ -109,17 +126,4 @@ class MainActivity : AppCompatActivity() {
             )
         )
     }
-
-    /*fun insertarProducto(producto: Producto){
-        lifecycleScope.launch {
-            repository.insert(producto)
-        }
-    }*/
-
-    /*fun consultarProductos(){
-        lifecycleScope.launch {
-            listaRegistros = repository.getAll()
-            setupRecyclerView()
-        }
-    }*/
 }
