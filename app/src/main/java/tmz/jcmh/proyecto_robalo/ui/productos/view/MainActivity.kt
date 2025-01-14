@@ -2,6 +2,7 @@ package tmz.jcmh.proyecto_robalo.ui.productos.view
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -118,12 +119,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun permisos(){
-        solicitarPermisos.launch(
-            arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+    private fun permisos() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            // Solicita permisos solo para Android 10 o inferior
+            solicitarPermisos.launch(
+                arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
             )
-        )
+        }
     }
 }

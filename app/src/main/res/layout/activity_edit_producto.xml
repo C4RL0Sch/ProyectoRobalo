@@ -11,168 +11,234 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:layout_marginHorizontal="30dp"
+        style="@style/Title"
         android:text="EDITAR PRODUCTO"
-        android:textColor="#000000"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="15sp"
-        android:autoSizeMaxTextSize="50sp"
-        android:textStyle="bold"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/lbl_codigo"/>
+        app:layout_constraintBottom_toTopOf="@id/content"/>
 
-    <TextView
-        android:id="@+id/lbl_codigo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Código:"
-        android:textColor="#000000"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/lbl_nombre"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:layout_marginStart="20dp"/>
-
-    <TextView
-        android:id="@+id/txt_Codigo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="17dp"
-        android:text="Ejemplo"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:textColor="@color/black"
-        android:background="@color/white"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/lbl_nombre"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/lbl_codigo"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        />
-
-    <TextView
-        android:id="@+id/lbl_nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombre:"
-        android:textColor="#000000"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txt_Nombre"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Codigo"
-        android:layout_marginStart="20dp"/>
-
-    <EditText
-        android:id="@+id/txt_Nombre"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="17dp"
-        android:background="@color/white"
-        android:hint="Nombre"
-        android:minHeight="48dp"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/lbl_presentacion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lbl_nombre"
-        />
-
-    <TextView
-        android:id="@+id/lbl_presentacion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Presentación del producto:"
-        android:textColor="#000000"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txt_Presentacion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Nombre"
-        android:layout_marginStart="20dp"/>
-
-    <EditText
-        android:id="@+id/txt_Presentacion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="17dp"
-        android:background="@color/white"
-        android:hint="Presentación"
-        android:minHeight="48dp"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/lbl_precio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lbl_presentacion" />
-
-    <TextView
-        android:id="@+id/lbl_precio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Precio del producto:"
-        android:textColor="#000000"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/txt_Precio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Presentacion"
-        android:layout_marginStart="20dp"/>
-
-    <EditText
-        android:id="@+id/txt_Precio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="17dp"
-        android:background="@color/white"
-        android:hint="Precio"
-        android:inputType="numberDecimal"
-        android:minHeight="48dp"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/lbl_cantidad"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lbl_precio" />
-
-    <TextView
-        android:id="@+id/lbl_cantidad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stock del producto:"
-        android:textColor="#000000"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/txt_Cantidad"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Precio"
-        android:layout_marginStart="20dp"/>
-
-    <EditText
-        android:id="@+id/txt_Cantidad"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="17dp"
-        android:background="@color/white"
-        android:hint="Cantidad"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        android:textColor="@color/black"
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/content_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lbl_cantidad"
-        tools:ignore="VisualLintTextFieldSize" />
+        app:layout_constraintTop_toBottomOf="@id/textView">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/lbl_codigo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:layout_marginVertical="20dp"
+                    android:text="Código:"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_nombre"
+                    app:layout_constraintEnd_toStartOf="@id/txt_Codigo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/txt_Codigo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/LblEdit"
+                    android:text="Ejemplo"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_nombre"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/lbl_codigo"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/lbl_nombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Nombre:"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_Nombre"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_Codigo" />
+
+                <EditText
+                    android:id="@+id/txt_Nombre"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:hint="Nombre"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_presentacion"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_nombre"
+                    />
+
+                <TextView
+                    android:id="@+id/lbl_presentacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Presentación del producto:"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_Presentacion"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_Nombre" />
+
+                <EditText
+                    android:id="@+id/txt_Presentacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:hint="Presentación"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_precio"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_presentacion" />
+
+                <TextView
+                    android:id="@+id/lbl_precio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Precio del producto:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_Precio"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_Presentacion" />
+
+                <EditText
+                    android:id="@+id/txt_Precio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:hint="Precio"
+                    android:inputType="numberDecimal"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_cantidad"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_precio" />
+
+                <TextView
+                    android:id="@+id/lbl_cantidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Stock del producto:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_Cantidad"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_Precio"/>
+
+                <EditText
+                    android:id="@+id/txt_Cantidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:hint="Cantidad"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toTopOf="@id/image_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_cantidad" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/image_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="30dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_Cantidad"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/lbl_imagen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/LblTextCenter"
+                        android:text="Imagen del Producto:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lbl_imagen"
+                        app:layout_constraintBottom_toTopOf="@id/img_notFound"
+                        android:layout_marginVertical="20dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/img_notFound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img"
+                        app:layout_constraintBottom_toTopOf="@id/content_btn2"
+                        android:layout_marginVertical="20dp"
+                        android:visibility="visible"
+                        android:text="Sin imagen"
+                        android:textSize="18sp"
+                        />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/content_btn2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img_notFound"
+                        android:layout_marginHorizontal="10dp"
+                        >
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/btnFoto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/FloatingButton"
+                            android:src="@drawable/ic_camera"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/btnGaleria"
+                            android:backgroundTint="#e5b3fe"
+                            app:maxImageSize="40dp"
+                            />
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/btnGaleria"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/FloatingButton"
+                            android:src="@drawable/ic_gallery"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/btnFoto"
+                            android:backgroundTint="#e5b3fe"
+                            app:maxImageSize="40dp"
+                            />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_btn"
@@ -181,25 +247,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_Cantidad"
+        app:layout_constraintTop_toBottomOf="@id/content"
         android:layout_marginHorizontal="30dp"
         >
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnEdit"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:paddingVertical="10dp"
-            android:text="Guardar"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/FloatingButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnDelete"
-            android:layout_margin="15dp"
             android:backgroundTint="#08d721"
-            app:srcCompat="@drawable/baseline_edit_square_24"
+            android:src="@drawable/baseline_edit_square_24"
             app:maxImageSize="40dp"
             />
 
@@ -207,17 +269,13 @@
             android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Guardar"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            style="@style/FloatingButton"
             app:layout_constraintStart_toEndOf="@id/btnEdit"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnCancel"
-            android:layout_margin="15dp"
             android:backgroundTint="#f11729"
-            app:srcCompat="@drawable/btn_delete"
+            android:src="@drawable/btn_delete"
             app:maxImageSize="40dp"
             />
 
@@ -225,17 +283,13 @@
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Guardar"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            style="@style/FloatingButton"
             app:layout_constraintStart_toEndOf="@id/btnDelete"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="15dp"
             android:backgroundTint="#3375ec"
-            app:srcCompat="@drawable/btn_cancel"
+            android:src="@drawable/btn_cancel"
             app:maxImageSize="40dp"
             />
 
