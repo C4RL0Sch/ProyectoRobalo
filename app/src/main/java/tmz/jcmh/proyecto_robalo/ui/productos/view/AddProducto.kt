@@ -1,25 +1,20 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.view
 
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import tmz.jcmh.proyecto_robalo.MyApp
-import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.data.models.Producto
-import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.databinding.ActivityAddProductoBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import java.io.File
@@ -33,6 +28,7 @@ class AddProducto() : AppCompatActivity() {
         if(uri != null){
             binding.imgNotFound.visibility = View.GONE
             binding.img.visibility = View.VISIBLE
+            binding.btnDeleteImg.visibility = View.VISIBLE
             binding.img.setImageURI(uri)
         }
     }
@@ -79,6 +75,14 @@ class AddProducto() : AppCompatActivity() {
                     return@launch
                 }
 
+                if (binding.img.drawable != null) {
+                    // El ImageView tiene imagen
+                    val drawable = binding.img.drawable
+                    val bitmap = (drawable as BitmapDrawable).bitmap
+
+                    productoViewModel.saveImageToInternalStorage(bitmap, "${binding.txtCodigo.text.toString()}.png")
+                }
+
                 binding.txtCodigo.setText("")
                 binding.txtNombre.setText("")
                 binding.txtPresentacion.setText("")
@@ -96,6 +100,23 @@ class AddProducto() : AppCompatActivity() {
             solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
         }
 
+        binding.btnDeleteImg.setOnClickListener(){
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Está seguro de que desea eliminar la imagen?")
+                .setPositiveButton("Eliminar") { dialog, _ ->
+                    binding.imgNotFound.visibility = View.VISIBLE
+                    binding.img.visibility = View.GONE
+                    binding.btnDeleteImg.visibility = View.GONE
+                    binding.img.setImageDrawable(null)
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss() // Cierra el diálogo sin hacer nada
+                }
+                .create()
+                .show()
+        }
     }
 
     private val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -103,6 +124,7 @@ class AddProducto() : AppCompatActivity() {
             uriFoto?.let {
                 binding.imgNotFound.visibility = View.GONE
                 binding.img.visibility = View.VISIBLE
+                binding.btnDeleteImg.visibility = View.VISIBLE
                 binding.img.setImageURI(it)
             }
         } else {

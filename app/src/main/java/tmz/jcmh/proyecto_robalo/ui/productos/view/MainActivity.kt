@@ -4,18 +4,13 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import tmz.jcmh.proyecto_robalo.MyApp
@@ -23,7 +18,7 @@ import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.adapter.ProductoAdapter
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
-import tmz.jcmh.proyecto_robalo.utils.Excel
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -82,10 +77,18 @@ class MainActivity : AppCompatActivity() {
 
         permisos()
 
-        adapter = ProductoAdapter(emptyList())
+        adapter = ProductoAdapter(emptyList(), emptyMap<String, File>())
 
         productoViewModel.allProductos.observe(this, Observer {
-            adapter.UpdateList(it)
+            val images: Map<String, File> = it.mapNotNull { producto->
+                val imageFile = productoViewModel.getImageFile(producto.Codigo)
+                if (imageFile != null) {
+                    producto.Codigo to imageFile
+                } else {
+                    null
+                }
+            }.toMap()
+            adapter.UpdateList(it, images)
             binding.rvListaRegistros.adapter = adapter
         })
 

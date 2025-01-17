@@ -180,11 +180,11 @@
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"
                         android:layout_marginVertical="10dp"
-                        android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/img_notFound"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/lbl_imagen" />
+                        app:layout_constraintTop_toBottomOf="@id/lbl_imagen"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/img_notFound"
@@ -220,10 +220,24 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/btnGaleria"
+                            app:layout_constraintEnd_toStartOf="@id/btn_delete_img"
                             android:backgroundTint="#e5b3fe"
                             app:maxImageSize="40dp"
                             />
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/btn_delete_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_hide_image"
+                            app:maxImageSize="40dp"
+                            android:backgroundTint="#f11729"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/btnFoto"
+                            app:layout_constraintEnd_toStartOf="@id/btnGaleria"
+                            android:visibility="gone"
+                            style="@style/FloatingButton"/>
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:id="@+id/btnGaleria"
@@ -234,7 +248,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/btnFoto"
+                            app:layout_constraintStart_toEndOf="@id/btn_delete_img"
                             android:backgroundTint="#e5b3fe"
                             app:maxImageSize="40dp"
                             />

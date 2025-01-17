@@ -2,6 +2,7 @@ package tmz.jcmh.proyecto_robalo.ui.productos.viewmodel
 
 import android.app.Application
 import android.content.ContentResolver
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
@@ -10,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Sheet
@@ -253,6 +255,77 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
             //  se actualizará solo. Si no, puedes forzar una recarga)
             _mensaje.postValue("Cambios aplicados con éxito.")
             lecturaFinalizada.postValue(false)
+        }
+    }
+
+    fun saveImageToInternalStorage(bitmap: Bitmap, Filename: String){
+        viewModelScope.launch {
+            val success = saveImage(bitmap, Filename)
+            if (success) {
+                //_mensaje.value = "Imagen guardada correctamente"
+            } else {
+                //_mensaje.value = "Error al guardar la imagen"
+            }
+        }
+    }
+
+    suspend fun saveImage(bitmap: Bitmap, Filename: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val filesDir = getApplication<Application>().filesDir
+                val productosDir = File(filesDir, "productos")
+                if (!productosDir.exists()) {
+                    productosDir.mkdirs()
+                }
+
+                val imageFile = File(productosDir, "$Filename.png")
+                FileOutputStream(imageFile).use { fos ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                }
+                true // Indica que la operación fue exitosa
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false // Indica que ocurrió un error
+            }
+        }
+    }
+
+    fun deleteImageFile(Filename: String) {
+        val filesDir = getApplication<Application>().filesDir
+
+        val productosDir = File(filesDir, "productos")
+        if (!productosDir.exists()) {
+            productosDir.mkdirs()
+        }
+
+        val imageFile = File(productosDir, "$Filename.png")
+
+        if (imageFile.exists()) {
+            imageFile.delete()
+        }
+        else{
+            val imageFile = File(productosDir, "$Filename.png.png")
+            if (imageFile.exists()) {
+                imageFile.delete()
+            }
+        }
+    }
+
+    fun getImageFile(Filename: String): File? {
+        val filesDir = getApplication<Application>().filesDir
+
+        val productosDir = File(filesDir, "productos")
+        if (!productosDir.exists()) {
+            productosDir.mkdirs()
+        }
+
+        val imageFile = File(productosDir, "$Filename.png")
+        if (imageFile.exists()) {
+            return imageFile
+        }
+        else {
+            val imageFile = File(productosDir, "$Filename.png.png")
+            return if (imageFile.exists()) imageFile else null
         }
     }
 }

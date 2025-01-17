@@ -88,7 +88,7 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv3"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/content"
                 android:layout_margin="5dp"
                 android:textSize="16sp"
                 />
@@ -203,7 +203,7 @@
                 android:layout_marginVertical="5dp"
                 app:layout_constraintStart_toEndOf="@id/tv2"
                 app:layout_constraintTop_toBottomOf="@id/tvPrecio"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/content"
                 app:layout_constraintEnd_toStartOf="@id/img"
                 android:textSize="16sp"
                 android:textColor="@color/black"
@@ -227,6 +227,72 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCantidad"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:id="@+id/tv6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Imagen: "
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_margin="5dp"
+                    android:textSize="16sp"
+                    />
+
+                <TextView
+                    android:id="@+id/img_notFound"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Sin imagen"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    app:layout_constraintStart_toEndOf="@id/tv6"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/img_producto"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:scrollHorizontally="true"
+                    android:paddingEnd="10dp"
+                    android:visibility="visible"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_producto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="100dp"
+                    android:maxWidth="150dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    app:layout_constraintStart_toEndOf="@id/tv6"
+                    app:layout_constraintTop_toBottomOf="@id/img_notFound"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="gone"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

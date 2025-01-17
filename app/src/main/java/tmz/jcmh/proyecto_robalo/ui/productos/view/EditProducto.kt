@@ -1,6 +1,7 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.view
 
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
@@ -30,6 +32,7 @@ class EditProducto : AppCompatActivity() {
         if(uri != null){
             binding.imgNotFound.visibility = View.GONE
             binding.img.visibility = View.VISIBLE
+            binding.btnDeleteImg.visibility = View.VISIBLE
             binding.img.setImageURI(uri)
         }
     }
@@ -53,12 +56,19 @@ class EditProducto : AppCompatActivity() {
         if (codigo != null) {
             lifecycleScope.launch {
                 producto = productoViewModel.getByCode(codigo)
-
                 binding.txtCodigo.setText(producto.Codigo)
                 binding.txtNombre.setText(producto.Nombre)
                 binding.txtPresentacion.setText(producto.Presentacion)
                 binding.txtPrecio.setText(producto.Precio.toString())
                 binding.txtCantidad.setText(producto.Cantidad.toString())
+
+                val imageFile = productoViewModel.getImageFile(producto.Codigo)
+                if(imageFile!=null && imageFile.exists()){
+                    binding.imgNotFound.visibility = View.GONE
+                    binding.img.visibility = View.VISIBLE
+                    binding.img.setImageURI(Uri.fromFile(imageFile))
+                    binding.btnDeleteImg.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -75,18 +85,49 @@ class EditProducto : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            producto.Nombre = binding.txtNombre.text.toString()
-            producto.Presentacion = binding.txtPresentacion.text.toString()
-            producto.Precio = binding.txtPrecio.text.toString().toDouble()
-            producto.Cantidad = binding.txtCantidad.text.toString().toInt()
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar edición")
+                .setMessage("¿Está seguro de que desea guardar los cambios?")
+                .setPositiveButton("Guardar") { dialog, _ ->
+                    producto.Nombre = binding.txtNombre.text.toString()
+                    producto.Presentacion = binding.txtPresentacion.text.toString()
+                    producto.Precio = binding.txtPrecio.text.toString().toDouble()
+                    producto.Cantidad = binding.txtCantidad.text.toString().toInt()
 
-            productoViewModel.Update(producto)
-            finish()
+                    productoViewModel.deleteImageFile(producto.Codigo)
+                    if (binding.img.drawable != null) {
+                        // El ImageView tiene imagen
+                        val drawable = binding.img.drawable
+                        val bitmap = (drawable as BitmapDrawable).bitmap
+
+                        productoViewModel.saveImageToInternalStorage(bitmap, "${producto.Codigo}.png")
+                    }
+                    productoViewModel.Update(producto)
+                    dialog.dismiss()
+                    finish()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss() // Cierra el diálogo sin hacer nada
+                }
+                .create()
+                .show()
         }
 
         binding.btnDelete.setOnClickListener(){
-            productoViewModel.Delete(producto)
-            finish()
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Está seguro de que desea eliminar permanentemente el producto?")
+                .setPositiveButton("Eliminar") { dialog, _ ->
+                    productoViewModel.deleteImageFile(producto.Codigo)
+                    productoViewModel.Delete(producto)
+                    dialog.dismiss()
+                    finish()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss() // Cierra el diálogo sin hacer nada
+                }
+                .create()
+                .show()
         }
 
         binding.btnGaleria.setOnClickListener(){
@@ -97,6 +138,24 @@ class EditProducto : AppCompatActivity() {
             solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
         }
 
+        binding.btnDeleteImg.setOnClickListener(){
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Está seguro de que desea eliminar la imagen?")
+                .setPositiveButton("Eliminar") { dialog, _ ->
+                    binding.imgNotFound.visibility = View.VISIBLE
+                    binding.img.visibility = View.GONE
+                    binding.btnDeleteImg.visibility = View.GONE
+                    binding.img.setImageDrawable(null)
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss() // Cierra el diálogo sin hacer nada
+                }
+                .create()
+                .show()
+        }
+
     }
 
     private val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -104,6 +163,7 @@ class EditProducto : AppCompatActivity() {
             uriFoto?.let {
                 binding.imgNotFound.visibility = View.GONE
                 binding.img.visibility = View.VISIBLE
+                binding.btnDeleteImg.visibility = View.VISIBLE
                 binding.img.setImageURI(it)
             }
         } else {
