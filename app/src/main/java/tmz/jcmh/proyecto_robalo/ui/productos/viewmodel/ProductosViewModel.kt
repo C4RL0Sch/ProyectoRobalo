@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +21,6 @@ import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.UUID
 
 class ProductosViewModel (application: Application) : AndroidViewModel(application) {
 
@@ -278,7 +276,7 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                     productosDir.mkdirs()
                 }
 
-                val imageFile = File(productosDir, "$Filename.png")
+                val imageFile = File(productosDir, "$Filename")
                 FileOutputStream(imageFile).use { fos ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 }
@@ -303,12 +301,6 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
         if (imageFile.exists()) {
             imageFile.delete()
         }
-        else{
-            val imageFile = File(productosDir, "$Filename.png.png")
-            if (imageFile.exists()) {
-                imageFile.delete()
-            }
-        }
     }
 
     fun getImageFile(Filename: String): File? {
@@ -320,12 +312,6 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
         }
 
         val imageFile = File(productosDir, "$Filename.png")
-        if (imageFile.exists()) {
-            return imageFile
-        }
-        else {
-            val imageFile = File(productosDir, "$Filename.png.png")
-            return if (imageFile.exists()) imageFile else null
-        }
+        return if (imageFile.exists()) imageFile else null
     }
 }
