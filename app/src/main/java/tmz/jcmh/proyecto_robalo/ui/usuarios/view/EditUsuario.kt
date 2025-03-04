@@ -1,32 +1,34 @@
-package tmz.jcmh.proyecto_robalo.ui.productos.view
+package tmz.jcmh.proyecto_robalo.ui.usuarios.view
 
-import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.lifecycle.Observer
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import tmz.jcmh.proyecto_robalo.MyApp
-import tmz.jcmh.proyecto_robalo.data.models.Producto
-import tmz.jcmh.proyecto_robalo.databinding.ActivityEditProductoBinding
-import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
+import tmz.jcmh.proyecto_robalo.R
+import tmz.jcmh.proyecto_robalo.data.models.Usuario
+import tmz.jcmh.proyecto_robalo.databinding.ActivityEditUsuarioBinding
+import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 import java.io.File
 
-class EditProducto : AppCompatActivity() {
-    private lateinit var binding: ActivityEditProductoBinding
-    val productoViewModel: ProductosViewModel
-        get() = (application as MyApp).productoViewModel
+class EditUsuario : AppCompatActivity() {
+    private lateinit var binding: ActivityEditUsuarioBinding
+    val usuariosViewModel: UsuariosViewModel
+        get() = (application as MyApp).usuarioViewModel
 
-    private lateinit var producto: Producto
+    private lateinit var usuario: Usuario
 
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
         if(uri != null){
@@ -47,23 +49,32 @@ class EditProducto : AppCompatActivity() {
         }
     }
 
+    //CREACIÓN DE LA VISTA
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEditProductoBinding.inflate(layoutInflater)
+        binding = ActivityEditUsuarioBinding.inflate(layoutInflater)
 
-        val codigo = intent.getStringExtra("codigo")
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.UsersTypes,
+            android.R.layout.simple_spinner_dropdown_item
+        )
+        binding.SpinnerTypeUser.adapter = adapter
 
-        if (codigo != null) {
+        val user = intent.getStringExtra("user")
+
+        if (user != null) {
             lifecycleScope.launch {
-                producto = productoViewModel.getByCode(codigo)
-                binding.txtCodigo.setText(producto.Codigo)
-                binding.txtNombre.setText(producto.Nombre)
-                binding.txtPresentacion.setText(producto.Presentacion)
-                binding.txtPrecio.setText(producto.Precio.toString())
-                binding.txtCantidad.setText(producto.Cantidad.toString())
+                usuario = usuariosViewModel.getByUser(user)
+                binding.txtNombre.setText(usuario.Nombre)
+                binding.txtApellidoP.setText(usuario.ApellidoP)
+                binding.txtApellidoM.setText(usuario.ApellidoM)
+                binding.txtUser.setText(usuario.Usuario)
+                binding.SpinnerTypeUser.setSelection(usuario.Puesto - 1)
+                binding.txtPassword.setText(usuario.Password)
 
-                val imageFile = productoViewModel.getImageFile(producto.Codigo)
-                if(imageFile!=null && imageFile.exists()){
+                val imageFile = usuariosViewModel.getImageFile(usuario.Usuario)
+                if (imageFile != null && imageFile.exists()) {
                     binding.imgNotFound.visibility = View.GONE
                     binding.img.visibility = View.VISIBLE
                     binding.img.setImageURI(Uri.fromFile(imageFile))
@@ -74,35 +85,71 @@ class EditProducto : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.btnCancel.setOnClickListener(){
+        binding.btnCancel.setOnClickListener() {
             finish()
         }
 
-        binding.btnEdit.setOnClickListener(){
-            if(binding.txtCodigo.text.toString().isEmpty() || binding.txtNombre.text.toString().isEmpty() || binding.txtPresentacion.text.toString().isEmpty() ||
-                binding.txtPrecio.text.toString().isEmpty() || binding.txtCantidad.text.toString().isEmpty()){
+        binding.btnEdit.setOnClickListener() {
+            if (binding.txtNombre.text.toString().isEmpty() || binding.txtApellidoP.text.toString().isEmpty()
+                || binding.txtApellidoM.text.toString().isEmpty() || binding.txtUser.text.toString().isEmpty()
+                || binding.txtPassword.text.toString().isEmpty()
+                || binding.txtPassword2.text.toString().isEmpty()
+            ) {
                 Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            val password = binding.txtPassword.text.toString()
+            val passLength = password.length
+            if(password.length<8){
+                binding.PasswordError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            if(password.replace("[0-9]".toRegex(), "").length == passLength){
+                binding.PasswordError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            if(password.replace("[a-z]".toRegex(), "").length == passLength){
+                binding.PasswordError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            if(password.replace("[A-Z]".toRegex(), "").length == passLength){
+                binding.PasswordError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            binding.PasswordError.visibility = View.GONE
+
+            if(binding.txtPassword.text.toString() != binding.txtPassword2.text.toString()){
+                binding.PasswordError2.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            binding.PasswordError2.visibility = View.GONE
 
             AlertDialog.Builder(this)
                 .setTitle("Confirmar edición")
                 .setMessage("¿Está seguro de que desea guardar los cambios?")
                 .setPositiveButton("Guardar") { dialog, _ ->
-                    producto.Nombre = binding.txtNombre.text.toString()
-                    producto.Presentacion = binding.txtPresentacion.text.toString()
-                    producto.Precio = binding.txtPrecio.text.toString().toDouble()
-                    producto.Cantidad = binding.txtCantidad.text.toString().toInt()
+                    usuario.Nombre = binding.txtNombre.text.toString()
+                    usuario.ApellidoP = binding.txtApellidoP.text.toString()
+                    usuario.ApellidoM = binding.txtApellidoM.text.toString()
+                    usuario.Usuario = binding.txtUser.text.toString()
+                    usuario.Password = binding.txtPassword.text.toString()
+                    usuario.Puesto = (binding.SpinnerTypeUser.selectedItemPosition + 1)
 
-                    productoViewModel.deleteImageFile(producto.Codigo)
+                    usuariosViewModel.deleteImageFile(usuario.Usuario)
                     if (binding.img.drawable != null) {
                         // El ImageView tiene imagen
                         val drawable = binding.img.drawable
                         val bitmap = (drawable as BitmapDrawable).bitmap
 
-                        productoViewModel.saveImageToInternalStorage(bitmap, producto.Codigo)
+                        usuariosViewModel.saveImage(bitmap, usuario.Usuario)
                     }
-                    productoViewModel.Update(producto)
+                    usuariosViewModel.Update(usuario)
                     dialog.dismiss()
                     finish()
                 }
@@ -113,13 +160,13 @@ class EditProducto : AppCompatActivity() {
                 .show()
         }
 
-        binding.btnDelete.setOnClickListener(){
+        binding.btnDelete.setOnClickListener() {
             AlertDialog.Builder(this)
                 .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar permanentemente el producto?")
+                .setMessage("¿Está seguro de que desea eliminar permanentemente el usuario?")
                 .setPositiveButton("Eliminar") { dialog, _ ->
-                    productoViewModel.deleteImageFile(producto.Codigo)
-                    productoViewModel.Delete(producto)
+                    usuariosViewModel.deleteImageFile(usuario.Usuario)
+                    usuariosViewModel.Delete(usuario)
                     dialog.dismiss()
                     finish()
                 }
@@ -155,9 +202,7 @@ class EditProducto : AppCompatActivity() {
                 .create()
                 .show()
         }
-
     }
-
     private val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             uriFoto?.let {

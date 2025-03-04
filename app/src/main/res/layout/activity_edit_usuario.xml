@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         style="@style/Title"
-        android:text="REGISTRAR PRODUCTOS"
+        android:text="EDITAR USARIO"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,118 +35,197 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/lbl_codigo"
+                    android:id="@+id/lbl_nombre"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Código:"
+                    android:text="Nombre:"
                     android:textColor="#000000"
                     android:textSize="25sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/txt_Codigo"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_nombre"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="20dp"/>
 
                 <EditText
-                    android:id="@+id/txt_Codigo"
+                    android:id="@+id/txt_nombre"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Código del producto..."
-                    android:inputType="number"
-                    app:layout_constraintBottom_toTopOf="@id/lbl_nombre"
+                    android:hint="Nombre del usuario..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_ApellidoP"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.47"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_codigo" />
+                    app:layout_constraintTop_toBottomOf="@id/lbl_nombre" />
 
                 <TextView
-                    android:id="@+id/lbl_nombre"
+                    android:id="@+id/lbl_ApellidoP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Nombre:"
-                    app:layout_constraintBottom_toTopOf="@+id/txt_Nombre"
+                    android:text="Apellido Paterno:"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_ApellidoP"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Codigo" />
+                    app:layout_constraintTop_toBottomOf="@+id/txt_nombre" />
 
                 <EditText
-                    android:id="@+id/txt_Nombre"
+                    android:id="@+id/txt_ApellidoP"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Nombre del producto..."
-                    app:layout_constraintBottom_toTopOf="@id/lbl_presentacion"
+                    android:hint="Apellido Paterno..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_ApellidoM"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_nombre"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_ApellidoP"
                     />
 
                 <TextView
-                    android:id="@+id/lbl_presentacion"
+                    android:id="@+id/lbl_ApellidoM"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Presentación:"
-                    app:layout_constraintBottom_toTopOf="@+id/txt_Presentacion"
+                    android:text="Apellido Materno:"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_ApellidoM"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Nombre" />
+                    app:layout_constraintTop_toBottomOf="@+id/txt_ApellidoP" />
 
                 <EditText
-                    android:id="@+id/txt_Presentacion"
+                    android:id="@+id/txt_ApellidoM"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Presentación del producto..."
-                    app:layout_constraintBottom_toTopOf="@id/lbl_precio"
+                    android:hint="Apellido Materno..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_Spinner"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_presentacion" />
+                    app:layout_constraintTop_toBottomOf="@id/lbl_ApellidoM" />
 
                 <TextView
-                    android:id="@+id/lbl_precio"
+                    android:id="@+id/lbl_Spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Precio:"
-                    app:layout_constraintBottom_toTopOf="@id/txt_Precio"
+                    android:text="Tipo de Usuario:"
+                    app:layout_constraintBottom_toTopOf="@id/Spinner_TypeUser"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Presentacion" />
+                    app:layout_constraintTop_toBottomOf="@id/txt_ApellidoM" />
 
-                <EditText
-                    android:id="@+id/txt_Precio"
+                <Spinner
+                    android:id="@+id/Spinner_TypeUser"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    style="@style/EditText"
-                    android:hint="Precio del producto..."
-                    android:inputType="numberDecimal"
-                    app:layout_constraintBottom_toTopOf="@id/lbl_cantidad"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:spinnerMode="dialog"
+                    style="@style/Spinner"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_precio" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_Spinner"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_User"
+                    />
+
 
                 <TextView
-                    android:id="@+id/lbl_cantidad"
+                    android:id="@+id/lbl_User"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Stock:"
-                    app:layout_constraintBottom_toTopOf="@id/txt_Cantidad"
+                    android:text="Usuario:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_User"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Precio" />
+                    app:layout_constraintTop_toBottomOf="@id/Spinner_TypeUser" />
 
                 <EditText
-                    android:id="@+id/txt_Cantidad"
+                    android:id="@+id/txt_User"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Cantidad del producto..."
-                    android:inputType="number"
-                    app:layout_constraintBottom_toTopOf="@id/image_content"
+                    android:hint="Usuario..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_cantidad"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_User" />
+
+                <TextView
+                    android:id="@+id/lbl_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Contraseña:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_password"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_User" />
+
+                <EditText
+                    android:id="@+id/txt_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:inputType="textPassword"
+                    android:hint="Contraseña del usuario..."
+                    app:layout_constraintBottom_toTopOf="@id/PasswordError"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_password"
                     tools:ignore="VisualLintTextFieldSize"
+                    />
+
+                <TextView
+                    android:id="@+id/PasswordError"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_password"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_password2"
+                    android:layout_marginTop="-15dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    android:text="@string/password_error"
+                    android:layout_marginHorizontal="25dp"
+                    android:justificationMode="inter_word"
+                    android:textSize="18sp"
+                    android:textColor="#D50000"
+                    />
+
+                <TextView
+                    android:id="@+id/lbl_password2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Confirmar contraseña:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_password2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/PasswordError" />
+
+                <EditText
+                    android:id="@+id/txt_password2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:inputType="textPassword"
+                    android:hint="Contraseña del usuario..."
+                    app:layout_constraintTop_toBottomOf="@id/lbl_password2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/PasswordError2"
+                    tools:ignore="VisualLintTextFieldSize"
+                    />
+
+                <TextView
+                    android:id="@+id/PasswordError2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_password2"
+                    app:layout_constraintBottom_toTopOf="@id/image_content"
+                    android:layout_marginTop="-15dp"
+                    android:visibility="gone"
+                    android:text="@string/password_error2"
+                    android:layout_marginHorizontal="25dp"
+                    android:textSize="18sp"
+                    android:textColor="#D50000"
                     />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,7 +236,7 @@
                     android:layout_marginHorizontal="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txt_Cantidad"
+                    app:layout_constraintTop_toBottomOf="@id/PasswordError2"
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView
@@ -165,7 +244,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/LblTextCenter"
-                        android:text="Imagen del Producto:"
+                        android:text="Foto del Usuario:"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -269,36 +348,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginHorizontal="5dp"
+        android:layout_marginHorizontal="30dp"
         >
 
-        <Button
-            android:id="@+id/btnGuardar"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Guardar"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            style="@style/FloatingButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnCancelar"
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            android:backgroundTint="#08d721"
+            android:src="@drawable/baseline_edit_square_24"
+            app:maxImageSize="40dp"
             />
 
-        <Button
-            android:id="@+id/btnCancelar"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Cancelar"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/FloatingButton"
+            app:layout_constraintStart_toEndOf="@id/btnEdit"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnGuardar"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            android:backgroundTint="#f11729"
+            android:src="@drawable/btn_delete"
+            app:maxImageSize="40dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/FloatingButton"
+            app:layout_constraintStart_toEndOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="#3375ec"
+            android:src="@drawable/btn_cancel"
+            app:maxImageSize="40dp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

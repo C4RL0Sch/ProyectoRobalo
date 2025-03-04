@@ -218,7 +218,6 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/btn_delete_img"
-                            android:backgroundTint="#e5b3fe"
                             app:maxImageSize="40dp"
                             />
 
@@ -246,7 +245,6 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/btn_delete_img"
-                            android:backgroundTint="#e5b3fe"
                             app:maxImageSize="40dp"
                             />
 

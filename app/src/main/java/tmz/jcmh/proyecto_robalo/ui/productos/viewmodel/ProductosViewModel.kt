@@ -276,7 +276,7 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                     productosDir.mkdirs()
                 }
 
-                val imageFile = File(productosDir, "$Filename")
+                val imageFile = File(productosDir, "$Filename.png")
                 FileOutputStream(imageFile).use { fos ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 }

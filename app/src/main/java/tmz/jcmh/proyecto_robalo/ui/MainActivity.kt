@@ -1,4 +1,4 @@
-package tmz.jcmh.proyecto_robalo.ui.productos.view
+package tmz.jcmh.proyecto_robalo.ui
 
 import android.Manifest
 import android.content.Intent
@@ -10,23 +10,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
-import tmz.jcmh.proyecto_robalo.ui.productos.adapter.ProductoAdapter
+import tmz.jcmh.proyecto_robalo.ui.productos.view.ImportActivity
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
-import java.io.File
+import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
 
-    private lateinit var adapter: ProductoAdapter
     val productoViewModel: ProductosViewModel
         get() = (application as MyApp).productoViewModel
+
+    val usuariosViewModel: UsuariosViewModel
+        get() = (application as MyApp).usuarioViewModel
 
     private lateinit var solicitarPermisos: ActivityResultLauncher<Array<String>>
 
@@ -34,6 +35,39 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val isAdmin = intent.getBooleanExtra("isAdmin",false)
+
+        solicitarPermisos = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            val aceptados = it.all { it.value }
+            if (!aceptados) {
+                Toast.makeText(this, "SE TIENE QUE ACEPTAR LOS PERMISOS", Toast.LENGTH_LONG).show()
+            }
+        }
+        permisos()
+
+        //INSTANCIACIÓN DE LOS FRAGMENTOS A USAR
+        val AdminFragment = AdminFragment()
+        val EmpleadosFragment = EmpleadosFragment()
+
+        //INICIO DEL FRAGMENTO POR DEFECTO
+        val puesto = usuariosViewModel.logUser.value?.Puesto
+        if(puesto == 1)
+        {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.FragmentContainer, AdminFragment)
+                .commit()
+        }
+        else if(puesto == 2){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.FragmentContainer, EmpleadosFragment)
+                .commit()
+        }
+        else if(puesto==null && isAdmin){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.FragmentContainer, AdminFragment)
+                .commit()
+        }
 
         // Referencia al DrawerLayout
         drawerLayout = binding.drawerLayout
@@ -68,30 +102,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        solicitarPermisos = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-            val aceptados = it.all{ it.value }
-            if(!aceptados){
-                Toast.makeText(this, "SE TIENE QUE ACEPTAR LOS PERMISOS", Toast.LENGTH_LONG).show()
-            }
-        }
-
-        permisos()
-
-        adapter = ProductoAdapter(emptyList(), emptyMap<String, File>())
-
-        productoViewModel.allProductos.observe(this, Observer {
-            val images: Map<String, File> = it.mapNotNull { producto->
-                val imageFile = productoViewModel.getImageFile(producto.Codigo)
-                if (imageFile != null) {
-                    producto.Codigo to imageFile
-                } else {
-                    null
-                }
-            }.toMap()
-            adapter.UpdateList(it, images)
-            binding.rvListaRegistros.adapter = adapter
-        })
-
+        //OBSERVADORES DEL VIEWMODEL
         productoViewModel.mensaje.observe(this) { msj ->
             Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
         }
@@ -102,11 +113,6 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, ImportActivity::class.java)
                 startActivity(intent)
             }
-        }
-
-        binding.btnAdd.setOnClickListener(){
-            val intent = Intent(this, AddProducto::class.java)
-            startActivity(intent)
         }
     }
 
@@ -124,7 +130,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun permisos() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            // Solicita permisos solo para Android 10 o inferior
             solicitarPermisos.launch(
                 arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,

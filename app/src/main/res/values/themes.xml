@@ -3,6 +3,8 @@
     <style name="Base.Theme.Proyecto_Robalo" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/orange</item>
+        <item name="colorSecondary">@color/dark_blue</item>
     </style>
 
     <style name="Theme.Proyecto_Robalo" parent="Base.Theme.Proyecto_Robalo" />
