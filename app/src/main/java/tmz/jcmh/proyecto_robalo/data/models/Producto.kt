@@ -3,7 +3,7 @@ package tmz.jcmh.proyecto_robalo.data.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+//ETIQUETAS DE ROOM EN DESUSO
 @Entity(tableName = "Productos")
 data class Producto(
     @PrimaryKey(autoGenerate = true)

@@ -8,7 +8,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import tmz.jcmh.proyecto_robalo.data.models.Producto
-
+// USADO PARA EL FUNCIONAMIENTO DE LA APLICACIÓN CON ROOM Y SQLITE
+// EN DESUSO AL IMPLEMENTAR FIREBASE
 @Dao
 interface IProductoDAO {
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "934589331406",
+    "project_id": "robalo-7f45d",
+    "storage_bucket": "robalo-7f45d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934589331406:android:256b29aa91c6823eae5d9f",
+        "android_client_info": {
+          "package_name": "tmz.jcmh.proyecto_robalo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClytDrqIsRA7JtlTQV6EU9KH5KwnGQfeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

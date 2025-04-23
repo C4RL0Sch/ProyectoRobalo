@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-
+//ETIQUETAS DE ROOM EN DESUSO
 @Entity(
     tableName = "Producto_has_Venta",
     foreignKeys = [

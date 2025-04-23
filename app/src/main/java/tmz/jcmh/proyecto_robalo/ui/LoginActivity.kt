@@ -3,13 +3,8 @@ package tmz.jcmh.proyecto_robalo.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
 import tmz.jcmh.proyecto_robalo.MyApp
-import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityLoginBinding
 import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 

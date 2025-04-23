@@ -249,8 +249,6 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
             _productosEliminados.postValue(emptyList())
 
             // Y recarga la lista principal
-            // (si tu 'allProductos' es un LiveData que viene de un DAO con Flow o similar,
-            //  se actualizará solo. Si no, puedes forzar una recarga)
             _mensaje.postValue("Cambios aplicados con éxito.")
             lecturaFinalizada.postValue(false)
         }

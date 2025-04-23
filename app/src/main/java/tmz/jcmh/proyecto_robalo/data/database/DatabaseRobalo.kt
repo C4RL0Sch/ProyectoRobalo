@@ -8,8 +8,9 @@ import tmz.jcmh.proyecto_robalo.data.dao.IProductoDAO
 import tmz.jcmh.proyecto_robalo.data.dao.IUsuarioDAO
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.data.models.Usuario
-
-@Database(entities =[Producto::class, Usuario::class], version = 1)
+// USADO PARA EL FUNCIONAMIENTO DE LA APLICACIÓN CON ROOM Y SQLITE
+// EN DESUSO AL IMPLEMENTAR FIREBASE
+@Database(entities =[Producto::class, Usuario::class], version = 1, exportSchema = false)
 abstract class DatabaseRobalo: RoomDatabase() {
     abstract val daoProductos: IProductoDAO
     abstract val daoUsuarios: IUsuarioDAO

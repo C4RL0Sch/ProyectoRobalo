@@ -277,7 +277,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnDelete"
             android:backgroundTint="#08d721"
-            android:src="@drawable/baseline_edit_square_24"
+            android:src="@drawable/ic_edit"
             app:maxImageSize="40dp"
             />
 

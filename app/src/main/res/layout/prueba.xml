@@ -2,11 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.usuarios.view.UsersFragment"
-    android:background="@color/back">
+    tools:context=".ui.productos.view.ProductFragment">
 
     <TextView
         android:id="@+id/text"
@@ -17,8 +16,8 @@
         android:autoSizeMinTextSize="15sp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
-        android:text="USUARIOS"
-        android:textColor="@color/black"
+        android:text="PRODUCTOS"
+        android:textColor="#000000"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,21 +33,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text"
-        tools:listitem="@layout/item_rv_usuarios" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/orange_peach"
-        android:contentDescription="submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="50dp"
-        app:srcCompat="@drawable/add_btn"
-        app:tint="@null" />
+        tools:listitem="@layout/item_prueba" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

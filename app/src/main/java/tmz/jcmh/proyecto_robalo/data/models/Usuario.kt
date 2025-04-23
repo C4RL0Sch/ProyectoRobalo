@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
+//ETIQUETAS DE ROOM EN DESUSO
 @Entity(tableName = "Usuarios")
 data class Usuario (
     @PrimaryKey(autoGenerate = true)
