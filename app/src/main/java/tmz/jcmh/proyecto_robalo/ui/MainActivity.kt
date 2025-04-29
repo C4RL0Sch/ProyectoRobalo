@@ -4,11 +4,17 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
@@ -22,6 +28,7 @@ import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
+    private var doubleBackToExitPressedOnce = false
 
     val productoViewModel: ProductosViewModel
         get() = (application as MyApp).productoViewModel
@@ -37,6 +44,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val isAdmin = intent.getBooleanExtra("isAdmin",false)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                exitOnBackPressed()
+            }
+        })
 
         solicitarPermisos = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             val aceptados = it.all { it.value }
@@ -114,6 +127,28 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+    }
+
+    fun exitOnBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            return
+        }
+
+        if (doubleBackToExitPressedOnce) {
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            return
+        }
+
+        doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Presiona atrás otra vez para cerrar sesión", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
     private val createFileLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) { uri ->

@@ -34,7 +34,7 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
 
     fun login(username: String, password: String){
         viewModelScope.launch {
-            /*val user = repository.getByUser(username)
+            val user = repository.getByUser(username)
             if(user!=null && user.Password==password){
                 _logUser.postValue(user)
                 _isLoged.postValue(true)
@@ -42,7 +42,7 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
             else{
                 _logUser.postValue(null)
                 _isLoged.postValue(false)
-            }*/
+            }
         }
     }
 
