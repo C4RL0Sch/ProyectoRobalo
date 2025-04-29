@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     >
 
     <TextView
@@ -74,50 +75,111 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Nombre"
-                    app:layout_constraintBottom_toTopOf="@id/lbl_presentacion"
+                    android:hint="Nombre del producto..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_Categoria"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lbl_nombre"
                     />
 
                 <TextView
+                    android:id="@+id/lbl_Categoria"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Categoria:"
+                    app:layout_constraintBottom_toTopOf="@id/Spinner_Categoria"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_Nombre" />
+
+                <Spinner
+                    android:id="@+id/Spinner_Categoria"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/Spinner"
+                    app:layout_constraintBottom_toTopOf="@id/lbl_Marca"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_Categoria"/>
+
+                <TextView
+                    android:id="@+id/lbl_Marca"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Marca:"
+                    app:layout_constraintBottom_toTopOf="@id/txt_Marca"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/Spinner_Categoria" />
+
+                <EditText
+                    android:id="@+id/txt_Marca"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EditText"
+                    android:hint="Marca del producto..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_presentacion"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_Marca"/>
+
+                <TextView
                     android:id="@+id/lbl_presentacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Presentación del producto:"
+                    android:text="Presentación:"
                     app:layout_constraintBottom_toTopOf="@+id/txt_Presentacion"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Nombre" />
+                    app:layout_constraintTop_toBottomOf="@id/txt_Marca" />
 
                 <EditText
                     android:id="@+id/txt_Presentacion"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Presentación"
+                    android:hint="Presentación del producto..."
+                    app:layout_constraintBottom_toTopOf="@id/lbl_Medida"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_presentacion"/>
+
+                <TextView
+                    android:id="@+id/lbl_Medida"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/LblText"
+                    android:text="Medida:"
+                    app:layout_constraintBottom_toTopOf="@id/Spinner_Medida"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_Presentacion" />
+
+                <Spinner
+                    android:id="@+id/Spinner_Medida"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/Spinner"
                     app:layout_constraintBottom_toTopOf="@id/lbl_precio"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_presentacion" />
+                    app:layout_constraintTop_toBottomOf="@id/lbl_Medida"/>
 
                 <TextView
                     android:id="@+id/lbl_precio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Precio del producto:"
+                    android:text="Precio:"
                     app:layout_constraintBottom_toTopOf="@id/txt_Precio"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Presentacion" />
+                    app:layout_constraintTop_toBottomOf="@+id/Spinner_Medida" />
 
                 <EditText
                     android:id="@+id/txt_Precio"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Precio"
+                    android:hint="Precio del producto..."
                     android:inputType="numberDecimal"
                     app:layout_constraintBottom_toTopOf="@id/lbl_cantidad"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -129,22 +191,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/LblText"
-                    android:text="Stock del producto:"
+                    android:text="Stock:"
                     app:layout_constraintBottom_toTopOf="@id/txt_Cantidad"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_Precio"/>
+                    app:layout_constraintTop_toBottomOf="@+id/txt_Precio" />
 
                 <EditText
                     android:id="@+id/txt_Cantidad"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/EditText"
-                    android:hint="Cantidad"
+                    android:hint="Cantidad del producto..."
                     android:inputType="number"
                     app:layout_constraintBottom_toTopOf="@id/image_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_cantidad" />
+                    app:layout_constraintTop_toBottomOf="@id/lbl_cantidad"
+                    tools:ignore="VisualLintTextFieldSize"
+                    />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/image_content"

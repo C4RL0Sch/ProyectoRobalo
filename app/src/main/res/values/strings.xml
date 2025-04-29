@@ -8,6 +8,19 @@
         <item>Administrador</item>
         <item>Empleado</item>
     </string-array>
+
+    <string-array name="Categorias">
+        <item>Abarrote</item>
+        <item>Marisco</item>
+        <item>Pescado</item>
+    </string-array>
+
+    <string-array name="Medidas">
+        <item>Pieza</item>
+        <item>Kilo</item>
+        <item>Litro</item>
+    </string-array>
+
     <string name="password_error">*La contraseña debe tener al menos 8 caracteres, contener al menos una letra mayúscula, una letra minúscula y un número*</string>
     <string name="password_error2">*Las contraseñas no coinciden*</string>
 </resources>

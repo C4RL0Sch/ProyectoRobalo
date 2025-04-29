@@ -71,12 +71,14 @@ class AddUsuario : AppCompatActivity() {
 
             val password = binding.txtPassword.text.toString()
             val passLength = password.length
-            if(password.length<8){
+            if((password.length<8) || (password.replace("[0-9]".toRegex(), "").length == passLength) ||
+                (password.replace("[a-z]".toRegex(), "").length == passLength) ||
+                (password.replace("[A-Z]".toRegex(), "").length == passLength)){
                 binding.PasswordError.visibility = View.VISIBLE
                 return@setOnClickListener
             }
 
-            if(password.replace("[0-9]".toRegex(), "").length == passLength){
+            /*if(password.replace("[0-9]".toRegex(), "").length == passLength){
                 binding.PasswordError.visibility = View.VISIBLE
                 return@setOnClickListener
             }
@@ -89,7 +91,7 @@ class AddUsuario : AppCompatActivity() {
             if(password.replace("[A-Z]".toRegex(), "").length == passLength){
                 binding.PasswordError.visibility = View.VISIBLE
                 return@setOnClickListener
-            }
+            }*/
 
             binding.PasswordError.visibility = View.GONE
 
@@ -101,36 +103,36 @@ class AddUsuario : AppCompatActivity() {
             binding.PasswordError2.visibility = View.GONE
 
             val nuevo = Usuario(
-                null,
+                binding.txtUser.text.toString(),
                 binding.txtNombre.text.toString(),
                 binding.txtApellidoP.text.toString(),
                 binding.txtApellidoM.text.toString(),
-                binding.txtUser.text.toString(),
                 binding.txtPassword.text.toString(),
                 (binding.SpinnerTypeUser.selectedItemPosition+1)
             )
 
-            lifecycleScope.launch {
-                if(!usuariosViewModel.insert(nuevo)){
-                    Toast.makeText(getContext(), "HAY OTRO USUARIO CON EL MISMO NOMBRE DE USUARIO", Toast.LENGTH_SHORT).show()
-                    return@launch
-                }
-
-                if (binding.img.drawable != null) {
-                    // El ImageView tiene imagen
-                    val drawable = binding.img.drawable
-                    val bitmap = (drawable as BitmapDrawable).bitmap
-
-                    usuariosViewModel.saveImage(bitmap, nuevo.Usuario)
-                }
-
-                binding.txtNombre.setText("")
-                binding.txtApellidoP.setText("")
-                binding.txtApellidoM.setText("")
-                binding.txtUser.setText("")
-                binding.txtPassword.setText("")
-                finish()
+            if(!usuariosViewModel.isUserAvalible(nuevo.Usuario?:"")){
+                Toast.makeText(getContext(), "HAY OTRO USUARIO CON EL MISMO NOMBRE DE USUARIO", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+            else{
+                usuariosViewModel.insert(nuevo)
+            }
+
+            if (binding.img.drawable != null) {
+                // El ImageView tiene imagen
+                val drawable = binding.img.drawable
+                val bitmap = (drawable as BitmapDrawable).bitmap
+
+                usuariosViewModel.saveImage(bitmap, nuevo.Usuario?:"")
+            }
+
+            binding.txtNombre.setText("")
+            binding.txtApellidoP.setText("")
+            binding.txtApellidoM.setText("")
+            binding.txtUser.setText("")
+            binding.txtPassword.setText("")
+            finish()
         }
 
         binding.btnGaleria.setOnClickListener(){

@@ -18,8 +18,10 @@ class ProductoResumen_Adapter (
         val tvCodigo: TextView = itemView.findViewById(R.id.tvCodigo)
         val tvNombre: TextView = itemView.findViewById(R.id.tvProducto)
         val tvPresentacion: TextView = itemView.findViewById(R.id.tvPresentacion)
+        val tvMarca: TextView = itemView.findViewById(R.id.tvMarca)
         val tvPrecio: TextView = itemView.findViewById(R.id.tvPrecio)
         val tvCantidad: TextView = itemView.findViewById(R.id.tvCantidad)
+        val tvCategoria: TextView = itemView.findViewById(R.id.tvCategoria)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,9 +33,11 @@ class ProductoResumen_Adapter (
         val producto = listaProductos[position]
         holder.tvCodigo.text = producto.Codigo
         holder.tvNombre.text = producto.Nombre
-        holder.tvPresentacion.text = producto.Presentacion
+        holder.tvPresentacion.text = "${producto.Presentacion} | ${producto.Presentacion}"
         holder.tvPrecio.text = producto.Precio.toString()
         holder.tvCantidad.text = producto.Cantidad.toString()
+        holder.tvMarca.text = producto.Marca
+        holder.tvCategoria.text = producto.Categoria
     }
 
     override fun getItemCount(): Int {

@@ -11,13 +11,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.CellType
-import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import tmz.jcmh.proyecto_robalo.data.database.DatabaseRobalo
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
+import tmz.jcmh.proyecto_robalo.util.ExcelManager
+import tmz.jcmh.proyecto_robalo.util.InternalStorageManager
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -43,39 +40,61 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
 
     val lecturaFinalizada = MutableLiveData<Boolean>()
 
+    val excel = ExcelManager()
+    val internalManager = InternalStorageManager()
+
     init {
-        val productoDao = DatabaseRobalo.getDatabase(application).daoProductos
-        repository = ProductoRepository(productoDao)
-        allProductos = repository.getAll()
+        repository = ProductoRepository()
+        allProductos = repository.productos
     }
 
-    //TODO REPORTE
+    fun countByCode(codigo: String): Int?{
+        val lista = allProductos.value?.toList()
+        val cont = lista?.filter { p-> p.Codigo?.contains(codigo) == true }?.count()
+        return cont
+    }
+
     suspend fun getByCode(codigo: String): Producto{
-        val producto= repository.getByCode(codigo)
+        val producto = repository.getById(codigo)
+        if(producto==null){
+            return Producto()
+        }
         return producto
     }
 
-    suspend fun insert(producto: Producto):Boolean {
-        val count = repository.CountByCodigo(producto.Codigo)
+    fun insert(producto: Producto) {
+        viewModelScope.launch {
+            val prod = repository.getById(producto.Codigo ?: "")
 
-        if(count==0) {
-            repository.insert(producto)
-            return true
-        }
-        else{
-            return false
+            if (prod == null) {
+                repository.insert(producto)
+            } else {
+                throw IOException("Error al guardar el producto")
+            }
         }
     }
 
     fun Delete(producto: Producto){
         viewModelScope.launch {
-            repository.delete(producto)
+            val res = repository.delete(producto)
+            if(res){
+                _mensaje.postValue("Producto eliminado correctamente")
+            }
+            else{
+                _mensaje.postValue("Error al eliminar el producto")
+            }
         }
     }
 
     fun Update(producto: Producto){
         viewModelScope.launch {
-            repository.update(producto)
+            val res = repository.update(producto)
+            if(res){
+                _mensaje.postValue("Producto actualizado correctamente")
+            }
+            else{
+                _mensaje.postValue("Error al actualizar el producto")
+            }
         }
     }
 
@@ -84,26 +103,7 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
             try {
                 val listaRegistros = allProductos.value!!.toMutableList()
 
-                val workbook = XSSFWorkbook()
-                val sheet: Sheet = workbook.createSheet("Productos")
-
-                // Crear encabezados
-                val headerRow = sheet.createRow(0)
-                headerRow.createCell(0).setCellValue("Código")
-                headerRow.createCell(1).setCellValue("Producto")
-                headerRow.createCell(2).setCellValue("Presentación")
-                headerRow.createCell(3).setCellValue("Precio")
-                headerRow.createCell(4).setCellValue("Cantidad")
-
-                // Rellenar los datos
-                for (index in listaRegistros.indices) {
-                    val row = sheet.createRow(index + 1)
-                    row.createCell(0).setCellValue(listaRegistros[index].Codigo)
-                    row.createCell(1).setCellValue(listaRegistros[index].Nombre)
-                    row.createCell(2).setCellValue(listaRegistros[index].Presentacion)
-                    row.createCell(3).setCellValue(listaRegistros[index].Precio)
-                    row.createCell(4).setCellValue(listaRegistros[index].Cantidad.toDouble())
-                }
+                val workbook = excel.crearExcel(listaRegistros)
 
                 // Escribir el archivo
                 contentResolver.openOutputStream(uri)?.use { outputStream ->
@@ -120,10 +120,10 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // 1. Leer productos del Excel
-                val listaExcel = leerProductosDesdeExcel(uri, contentResolver)
+                val listaExcel = excel.leerProductosDesdeExcel(uri, contentResolver)
 
                 // 2. Obtener productos actuales de la base
-                val listaActual = repository.getAllNow() // Asegúrate que getAllNow() retorne List<Producto> de forma directa
+                val listaActual = allProductos.value?: emptyList() // Asegúrate que getAllNow() retorne List<Producto> de forma directa
 
                 // 3. Identificar nuevos, modificados y eliminados
                 //    Usamos Codigo como identificador único
@@ -139,8 +139,7 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                         val productoBD = mapaActual[codigo]!!
 
                         // Comparamos si hay cambios relevantes
-                        if (!productosSonIgualesSinId(productoBD, productoExcel)) {
-                            productoExcel.id = productoBD.id
+                        if (productoBD != productoExcel) {
                             tmpModificados.add(productoExcel)
                         }
                         // Lo removemos del mapa para que no cuente como eliminado
@@ -159,7 +158,7 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                 _productosEliminados.postValue(tmpEliminados)
 
                 // Avisar a la UI que se leyó correctamente
-                _mensaje.postValue("Archivo cargado. Previsualiza y confirma cambios.")
+                _mensaje.postValue("Archivo cargado. Revisa y confirma cambios.")
 
                 lecturaFinalizada.postValue(true)
 
@@ -169,62 +168,6 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                 _mensaje.postValue(e.message)
                 lecturaFinalizada.postValue(false)
             }
-        }
-    }
-
-    private fun productosSonIgualesSinId(prod1: Producto, prod2: Producto): Boolean {
-        return prod1.Codigo == prod2.Codigo &&
-                prod1.Nombre == prod2.Nombre &&
-                prod1.Presentacion == prod2.Presentacion &&
-                prod1.Precio == prod2.Precio &&
-                prod1.Cantidad == prod2.Cantidad
-    }
-
-    private fun leerProductosDesdeExcel(uri: Uri, contentResolver: ContentResolver): List<Producto> {
-        val lista = mutableListOf<Producto>()
-
-        contentResolver.openInputStream(uri).use { inputStream ->
-            val workbook = XSSFWorkbook(inputStream)
-            val sheet: Sheet = workbook.getSheetAt(0)
-
-            // Empieza a leer desde la fila 1 (suponiendo fila 0 es encabezado)
-            for (i in 1..sheet.lastRowNum) {
-                val row = sheet.getRow(i) ?: continue
-
-                val codigo = obtenerValorCelda(row.getCell(0))
-                val nombre = obtenerValorCelda(row.getCell(1))
-                val presentacion = obtenerValorCelda(row.getCell(2))
-                val precio = obtenerValorCelda(row.getCell(3)).toDoubleOrNull() ?: 0.0
-                val cantidad = obtenerValorCelda(row.getCell(4)).toDoubleOrNull()?.toInt() ?: 0
-
-                // Si faltan valores importantes, omite la fila
-                if (codigo.isEmpty() || nombre.isEmpty()) continue
-
-                // Agrega el producto a la lista
-                val producto = Producto(
-                    Codigo = codigo,
-                    Nombre = nombre,
-                    Presentacion = presentacion,
-                    Precio = precio,
-                    Cantidad = cantidad
-                )
-
-
-                lista.add(producto)
-            }
-            workbook.close()
-        }
-        return lista
-    }
-
-    private fun obtenerValorCelda(celda: Cell?): String {
-        return when {
-            celda == null -> ""
-            celda.cellType == CellType.STRING -> celda.stringCellValue
-            celda.cellType == CellType.NUMERIC -> celda.numericCellValue.toString()
-            celda.cellType == CellType.BOOLEAN -> celda.booleanCellValue.toString()
-            celda.cellType == CellType.FORMULA -> celda.cellFormula
-            else -> ""
         }
     }
 
@@ -256,7 +199,9 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
 
     fun saveImageToInternalStorage(bitmap: Bitmap, Filename: String){
         viewModelScope.launch {
-            val success = saveImage(bitmap, Filename)
+            val Dir = getApplication<Application>().filesDir
+            val productosDir = File(Dir, "productos")
+            val success = internalManager.saveImage(productosDir, bitmap, Filename)
             if (success) {
                 //_mensaje.value = "Imagen guardada correctamente"
             } else {
@@ -265,51 +210,15 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
         }
     }
 
-    suspend fun saveImage(bitmap: Bitmap, Filename: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val filesDir = getApplication<Application>().filesDir
-                val productosDir = File(filesDir, "productos")
-                if (!productosDir.exists()) {
-                    productosDir.mkdirs()
-                }
-
-                val imageFile = File(productosDir, "$Filename.png")
-                FileOutputStream(imageFile).use { fos ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-                }
-                true // Indica que la operación fue exitosa
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false // Indica que ocurrió un error
-            }
-        }
-    }
-
     fun deleteImageFile(Filename: String) {
-        val filesDir = getApplication<Application>().filesDir
-
-        val productosDir = File(filesDir, "productos")
-        if (!productosDir.exists()) {
-            productosDir.mkdirs()
-        }
-
-        val imageFile = File(productosDir, "$Filename.png")
-
-        if (imageFile.exists()) {
-            imageFile.delete()
-        }
+        val Dir = getApplication<Application>().filesDir
+        val productosDir = File(Dir, "productos")
+        internalManager.deleteImageFile(productosDir, Filename)
     }
 
     fun getImageFile(Filename: String): File? {
-        val filesDir = getApplication<Application>().filesDir
-
-        val productosDir = File(filesDir, "productos")
-        if (!productosDir.exists()) {
-            productosDir.mkdirs()
-        }
-
-        val imageFile = File(productosDir, "$Filename.png")
-        return if (imageFile.exists()) imageFile else null
+        val Dir = getApplication<Application>().filesDir
+        val productosDir = File(Dir, "productos")
+        return internalManager.getImageFile(productosDir, Filename)
     }
 }

@@ -40,9 +40,9 @@ class UsersFragment : Fragment() {
 
         usuarioViewModel.allUsuarios.observe(viewLifecycleOwner, Observer {
             val images: Map<String, File> = it.mapNotNull { user ->
-                val imageFile = usuarioViewModel.getImageFile(user.Usuario)
+                val imageFile = usuarioViewModel.getImageFile(user.Usuario?:"")
                 if (imageFile != null) {
-                    user.Usuario to imageFile
+                    (user.Usuario?:"") to imageFile
                 } else {
                     null
                 }

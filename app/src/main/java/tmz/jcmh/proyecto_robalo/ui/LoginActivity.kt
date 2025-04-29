@@ -9,8 +9,8 @@ import tmz.jcmh.proyecto_robalo.databinding.ActivityLoginBinding
 import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 
 class LoginActivity : AppCompatActivity() {
-    val usuariosViewModel: UsuariosViewModel
-        get() = (application as MyApp).usuarioViewModel
+    //val usuariosViewModel: UsuariosViewModel
+        //get() = (application as MyApp).usuarioViewModel
 
     private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,11 +34,11 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             else{
-                usuariosViewModel.login(username, password)
+                //usuariosViewModel.login(username, password)
             }
         }
 
-        usuariosViewModel.logUser.observe(this){
+        /*usuariosViewModel.logUser.observe(this){
             if(it==null){
                 Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
             }
@@ -47,6 +47,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
                 startActivity(intent)
             }
-        }
+        }*/
     }
 }

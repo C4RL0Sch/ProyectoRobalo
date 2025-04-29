@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="colorPrimary">@color/orange</item>
         <item name="colorSecondary">@color/dark_blue</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
     </style>
+    <style name="Theme.Proyecto_Robalo" parent="Base.Theme.Proyecto_Robalo" />
 </resources>

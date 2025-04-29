@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.2"
+agp = "8.9.0"
 kotlin = "2.1.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -13,6 +13,7 @@ firebaseBom = "33.12.0"
 service = "4.4.2"
 crashlytics = "3.0.3"
 dectools-ksp = "2.0.21-1.0.27"
+drawerlayout = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,6 +29,7 @@ firebase-bom = {module = "com.google.firebase:firebase-bom", version.ref = "fire
 firebase-crashlytics = {module = "com.google.firebase:firebase-crashlytics"}
 firebase-auth = {module = "com.google.firebase:firebase-auth-ktx"}
 firebase-firestore = {module = "com.google.firebase:firebase-firestore"}
+androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

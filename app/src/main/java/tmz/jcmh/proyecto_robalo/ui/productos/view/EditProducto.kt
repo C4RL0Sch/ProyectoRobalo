@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,10 +13,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import tmz.jcmh.proyecto_robalo.MyApp
+import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.databinding.ActivityEditProductoBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
@@ -50,6 +53,13 @@ class EditProducto : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProductoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val medidas = resources.getStringArray(R.array.Medidas)
+        val categorias = resources.getStringArray(R.array.Categorias)
+
+        binding.SpinnerCategoria.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
+        binding.SpinnerMedida.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medidas)
 
         val codigo = intent.getStringExtra("codigo")
 
@@ -61,99 +71,115 @@ class EditProducto : AppCompatActivity() {
                 binding.txtPresentacion.setText(producto.Presentacion)
                 binding.txtPrecio.setText(producto.Precio.toString())
                 binding.txtCantidad.setText(producto.Cantidad.toString())
+                binding.txtMarca.setText(producto.Marca)
+                binding.SpinnerMedida.setSelection(medidas.indexOf(producto.Medida))
+                binding.SpinnerCategoria.setSelection(categorias.indexOf(producto.Categoria))
 
-                val imageFile = productoViewModel.getImageFile(producto.Codigo)
-                if(imageFile!=null && imageFile.exists()){
+                val imageFile = productoViewModel.getImageFile(producto.Codigo ?: "")
+                if (imageFile != null && imageFile.exists()) {
                     binding.imgNotFound.visibility = View.GONE
                     binding.img.visibility = View.VISIBLE
                     binding.img.setImageURI(Uri.fromFile(imageFile))
                     binding.btnDeleteImg.visibility = View.VISIBLE
                 }
             }
-        }
 
-        setContentView(binding.root)
-
-        binding.btnCancel.setOnClickListener(){
-            finish()
-        }
-
-        binding.btnEdit.setOnClickListener(){
-            if(binding.txtCodigo.text.toString().isEmpty() || binding.txtNombre.text.toString().isEmpty() || binding.txtPresentacion.text.toString().isEmpty() ||
-                binding.txtPrecio.text.toString().isEmpty() || binding.txtCantidad.text.toString().isEmpty()){
-                Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            binding.btnCancel.setOnClickListener() {
+                finish()
             }
 
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar edición")
-                .setMessage("¿Está seguro de que desea guardar los cambios?")
-                .setPositiveButton("Guardar") { dialog, _ ->
-                    producto.Nombre = binding.txtNombre.text.toString()
-                    producto.Presentacion = binding.txtPresentacion.text.toString()
-                    producto.Precio = binding.txtPrecio.text.toString().toDouble()
-                    producto.Cantidad = binding.txtCantidad.text.toString().toInt()
+            binding.btnEdit.setOnClickListener() {
+                if (binding.txtCodigo.text.toString().isEmpty() || binding.txtNombre.text.toString()
+                        .isEmpty() ||
+                    binding.txtPresentacion.text.toString()
+                        .isEmpty() || binding.txtPrecio.text.toString().isEmpty() ||
+                    binding.txtCantidad.text.toString()
+                        .isEmpty() || binding.txtMarca.text.toString().isEmpty()
+                ) {
+                    Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-                    productoViewModel.deleteImageFile(producto.Codigo)
-                    if (binding.img.drawable != null) {
-                        // El ImageView tiene imagen
-                        val drawable = binding.img.drawable
-                        val bitmap = (drawable as BitmapDrawable).bitmap
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar edición")
+                    .setMessage("¿Está seguro de que desea guardar los cambios?")
+                    .setPositiveButton("Guardar") { dialog, _ ->
+                        producto.Codigo = binding.txtCodigo.text.toString()
+                        producto.Nombre = binding.txtNombre.text.toString()
+                        producto.Marca = binding.txtMarca.text.toString()
+                        producto.Categoria = binding.SpinnerCategoria.selectedItem.toString()
+                        producto.Medida = binding.SpinnerMedida.selectedItem.toString()
+                        producto.Presentacion = binding.txtPresentacion.text.toString()
+                        producto.Precio = binding.txtPrecio.text.toString().toDouble()
+                        producto.Cantidad = binding.txtCantidad.text.toString().toDouble()
 
-                        productoViewModel.saveImageToInternalStorage(bitmap, producto.Codigo)
+                        productoViewModel.deleteImageFile(producto.Codigo ?: "")
+                        if (binding.img.drawable != null) {
+                            // El ImageView tiene imagen
+                            val drawable = binding.img.drawable
+                            val bitmap = (drawable as BitmapDrawable).bitmap
+
+                            productoViewModel.saveImageToInternalStorage(
+                                bitmap,
+                                producto.Codigo ?: ""
+                            )
+                        }
+                        productoViewModel.Update(producto)
+                        dialog.dismiss()
+                        finish()
                     }
-                    productoViewModel.Update(producto)
-                    dialog.dismiss()
-                    finish()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
-        }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
 
-        binding.btnDelete.setOnClickListener(){
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar permanentemente el producto?")
-                .setPositiveButton("Eliminar") { dialog, _ ->
-                    productoViewModel.deleteImageFile(producto.Codigo)
-                    productoViewModel.Delete(producto)
-                    dialog.dismiss()
-                    finish()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
-        }
+            binding.btnDelete.setOnClickListener() {
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar eliminación")
+                    .setMessage("¿Está seguro de que desea eliminar permanentemente el producto?")
+                    .setPositiveButton("Eliminar") { dialog, _ ->
+                        productoViewModel.deleteImageFile(producto.Codigo ?: "")
+                        productoViewModel.Delete(producto)
+                        dialog.dismiss()
+                        finish()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
 
-        binding.btnGaleria.setOnClickListener(){
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
+            binding.btnGaleria.setOnClickListener() {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
 
-        binding.btnFoto.setOnClickListener(){
-            solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
-        }
+            binding.btnFoto.setOnClickListener() {
+                solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
+            }
 
-        binding.btnDeleteImg.setOnClickListener(){
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar la imagen?")
-                .setPositiveButton("Eliminar") { dialog, _ ->
-                    binding.imgNotFound.visibility = View.VISIBLE
-                    binding.img.visibility = View.GONE
-                    binding.btnDeleteImg.visibility = View.GONE
-                    binding.img.setImageDrawable(null)
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
+            binding.btnDeleteImg.setOnClickListener() {
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar eliminación")
+                    .setMessage("¿Está seguro de que desea eliminar la imagen?")
+                    .setPositiveButton("Eliminar") { dialog, _ ->
+                        binding.imgNotFound.visibility = View.VISIBLE
+                        binding.img.visibility = View.GONE
+                        binding.btnDeleteImg.visibility = View.GONE
+                        binding.img.setImageDrawable(null)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
+        }
+        else{
+            finish()
         }
 
     }

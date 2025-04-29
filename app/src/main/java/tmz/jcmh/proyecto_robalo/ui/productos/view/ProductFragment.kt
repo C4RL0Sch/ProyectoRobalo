@@ -38,9 +38,9 @@ class ProductFragment : Fragment() {
 
         productoViewModel.allProductos.observe(viewLifecycleOwner, Observer {
             val images: Map<String, File> = it.mapNotNull { producto ->
-                val imageFile = productoViewModel.getImageFile(producto.Codigo)
+                val imageFile = productoViewModel.getImageFile(producto.Codigo?:"")
                 if (imageFile != null) {
-                    producto.Codigo to imageFile
+                    (producto.Codigo?:"") to imageFile
                 } else {
                     null
                 }

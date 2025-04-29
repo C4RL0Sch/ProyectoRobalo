@@ -13,11 +13,13 @@ import tmz.jcmh.proyecto_robalo.data.database.DatabaseRobalo
 import tmz.jcmh.proyecto_robalo.data.models.Usuario
 import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.data.repository.UsuarioRepository
+import tmz.jcmh.proyecto_robalo.util.InternalStorageManager
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 class UsuariosViewModel (application: Application) : AndroidViewModel(application){
-    private val repository: UsuarioRepository
+    private val repository: UsuarioRepository = UsuarioRepository()
     val allUsuarios: LiveData<List<Usuario>>
 
     private val _logUser = MutableLiveData<Usuario?>()
@@ -30,16 +32,15 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
     private val _mensaje = MutableLiveData<String>()
     val mensaje: LiveData<String> = _mensaje
 
-    init {
-        val Dao = DatabaseRobalo.getDatabase(application).daoUsuarios
-        repository = UsuarioRepository(Dao)
-        allUsuarios = repository.getAll()
+    val internalManager = InternalStorageManager()
 
+    init{
+        allUsuarios = repository.usuarios
     }
 
     fun login(username: String, password: String){
         viewModelScope.launch {
-            val user = repository.getByUser(username)
+            /*val user = repository.getByUser(username)
             if(user!=null && user.Password==password){
                 _logUser.postValue(user)
                 _isLoged.postValue(true)
@@ -47,7 +48,18 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
             else{
                 _logUser.postValue(null)
                 _isLoged.postValue(false)
-            }
+            }*/
+        }
+    }
+
+    fun isUserAvalible(usuario: String): Boolean{
+        val lista = allUsuarios.value?.toList()
+        val user = lista?.find { p-> p.Usuario == usuario }
+        if(user == null){
+            return true
+        }
+        else{
+            return false
         }
     }
 
@@ -56,15 +68,9 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
         return usuario
     }
 
-    suspend fun insert(usuario: Usuario):Boolean{
-        val count = repository.CountByUser(usuario.Usuario)
-
-        if(count==0) {
+    fun insert(usuario: Usuario){
+        viewModelScope.launch {
             repository.insert(usuario)
-            return true
-        }
-        else{
-            return false
         }
     }
 
@@ -80,9 +86,11 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun saveImage(bitmap: Bitmap, Filename: String){
+    fun saveImage(bitmap: Bitmap, filename: String){
         viewModelScope.launch {
-            val success = saveImageToInternalStorage(bitmap, Filename)
+            val Dir = getApplication<Application>().filesDir
+            val usuariosDir = File(Dir, "usuarios")
+            val success = internalManager.saveImage(usuariosDir, bitmap, filename)
             if (success) {
                 //_mensaje.value = "Imagen guardada correctamente"
             } else {
@@ -91,51 +99,15 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    suspend fun saveImageToInternalStorage(bitmap: Bitmap, Filename: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val filesDir = getApplication<Application>().filesDir
-                val productosDir = File(filesDir, "usuarios")
-                if (!productosDir.exists()) {
-                    productosDir.mkdirs()
-                }
-
-                val imageFile = File(productosDir, "$Filename.png")
-                FileOutputStream(imageFile).use { fos ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-                }
-                true // Indica que la operación fue exitosa
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false // Indica que ocurrió un error
-            }
-        }
+    fun deleteImageFile(filename: String) {
+        val Dir = getApplication<Application>().filesDir
+        val usuariosDir = File(Dir, "usuarios")
+        internalManager.deleteImageFile(usuariosDir, filename)
     }
 
-    fun deleteImageFile(Filename: String) {
-        val filesDir = getApplication<Application>().filesDir
-
-        val productosDir = File(filesDir, "usuarios")
-        if (!productosDir.exists()) {
-            productosDir.mkdirs()
-        }
-
-        val imageFile = File(productosDir, "$Filename.png")
-
-        if (imageFile.exists()) {
-            imageFile.delete()
-        }
-    }
-
-    fun getImageFile(Filename: String): File? {
-        val filesDir = getApplication<Application>().filesDir
-
-        val productosDir = File(filesDir, "usuarios")
-        if (!productosDir.exists()) {
-            productosDir.mkdirs()
-        }
-
-        val imageFile = File(productosDir, "$Filename.png")
-        return if (imageFile.exists()) imageFile else null
+    fun getImageFile(filename: String): File? {
+        val Dir = getApplication<Application>().filesDir
+        val usuariosDir = File(Dir, "usuarios")
+        return internalManager.getImageFile(usuariosDir, filename)
     }
 }

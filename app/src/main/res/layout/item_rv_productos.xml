@@ -28,82 +28,42 @@
                 android:id="@+id/tv5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:text="Código: "
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tv1"
                 android:layout_margin="5dp"
-                android:textSize="16sp"
+                style="@style/CardLabel"
                 />
 
             <TextView
                 android:id="@+id/tv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:text="Nombre: "
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/tv5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tv2"
                 android:layout_margin="5dp"
-                android:textSize="16sp"
+                style="@style/CardLabel"
                 />
 
             <TextView
                 android:id="@+id/tv2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:text="Presentación: "
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv1"
-                app:layout_constraintBottom_toTopOf="@id/tv3"
+                app:layout_constraintBottom_toTopOf="@id/cl1"
                 android:layout_margin="5dp"
-                android:textSize="16sp"
-                />
-
-            <TextView
-                android:id="@+id/tv3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Precio: "
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv2"
-                app:layout_constraintBottom_toTopOf="@id/tv4"
-                android:layout_margin="5dp"
-                android:textSize="16sp"
-                />
-
-            <TextView
-                android:id="@+id/tv4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Cantidad: "
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv3"
-                app:layout_constraintBottom_toTopOf="@id/content"
-                android:layout_margin="5dp"
-                android:textSize="16sp"
+                style="@style/CardLabel"
                 />
 
             <TextView
                 android:id="@+id/tvCodigo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:hint="Código"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="5dp"
@@ -111,25 +71,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tvProducto"
                 app:layout_constraintEnd_toStartOf="@id/img"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-                android:fadingEdge="horizontal"
-                android:paddingEnd="10dp"
-                android:textIsSelectable="true"
+                style="@style/CardText"
                 />
+
+
 
             <TextView
                 android:id="@+id/tvProducto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:hint="Nombre"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="5dp"
@@ -137,91 +87,131 @@
                 app:layout_constraintTop_toBottomOf="@id/tvCodigo"
                 app:layout_constraintBottom_toTopOf="@id/tvPresentacion"
                 app:layout_constraintEnd_toStartOf="@id/img"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-                android:fadingEdge="horizontal"
-                android:paddingEnd="10dp"
-                android:textIsSelectable="true"
+                style="@style/CardText"
                 />
 
             <TextView
                 android:id="@+id/tvPresentacion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:hint="Presentación"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="5dp"
                 app:layout_constraintStart_toEndOf="@id/tv2"
                 app:layout_constraintTop_toBottomOf="@id/tvProducto"
-                app:layout_constraintBottom_toTopOf="@id/tvPrecio"
                 app:layout_constraintEnd_toStartOf="@id/img"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@id/cl1"
+                style="@style/CardText"
                 />
 
-            <TextView
-                android:id="@+id/tvPrecio"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:hint="Precio"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="5dp"
-                app:layout_constraintStart_toEndOf="@id/tv2"
                 app:layout_constraintTop_toBottomOf="@id/tvPresentacion"
-                app:layout_constraintBottom_toTopOf="@id/tvCantidad"
-                app:layout_constraintEnd_toStartOf="@id/img"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-                android:paddingEnd="10dp"
-                />
-
-            <TextView
-                android:id="@+id/tvCantidad"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:hint="Cantidad"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="5dp"
-                app:layout_constraintStart_toEndOf="@id/tv2"
-                app:layout_constraintTop_toBottomOf="@id/tvPrecio"
                 app:layout_constraintBottom_toTopOf="@id/content"
-                app:layout_constraintEnd_toStartOf="@id/img"
-                android:textSize="16sp"
-                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/img">
 
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-                android:paddingEnd="10dp"
-                />
+                <TextView
+                    android:id="@+id/tv3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Precio: "
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/tv4"
+                    android:layout_margin="5dp"
+                    style="@style/CardLabel"
+                    />
+
+                <TextView
+                    android:id="@+id/tv4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cantidad: "
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_margin="5dp"
+                    style="@style/CardLabel"
+                    />
+
+                <TextView
+                    android:id="@+id/tvPrecio"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Precio"
+                    android:layout_marginVertical="5dp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@id/tv4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/tvCantidad"
+                    style="@style/CardText"
+                    />
+
+                <TextView
+                    android:id="@+id/tvCantidad"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Cantidad"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    app:layout_constraintStart_toEndOf="@id/tv4"
+                    app:layout_constraintTop_toBottomOf="@id/tvPrecio"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    style="@style/CardText"
+                    />
+
+                <TextView
+                    android:id="@+id/tv7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Marca: "
+                    android:layout_marginVertical="5dp"
+                    app:layout_constraintBottom_toTopOf="@id/tvCategoria"
+                    app:layout_constraintStart_toEndOf="@id/tvPrecio"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/CardLabel"/>
+
+                <TextView
+                    android:id="@+id/tvMarca"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Marca"
+                    app:layout_constraintStart_toEndOf="@id/tv8"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/tvCategoria"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginVertical="5dp"
+                    style="@style/CardText"/>
+
+                <TextView
+                    android:id="@+id/tv8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categoria: "
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvCantidad"
+                    app:layout_constraintTop_toBottomOf="@id/tv7"
+                    android:layout_marginVertical="5dp"
+                    style="@style/CardLabel"/>
+
+                <TextView
+                    android:id="@+id/tvCategoria"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Marisco"
+                    app:layout_constraintStart_toEndOf="@id/tv8"
+                    app:layout_constraintTop_toBottomOf="@id/tvMarca"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginVertical="5dp"
+                    style="@style/CardText"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageButton
                 android:id="@+id/img"
@@ -239,7 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvCantidad"
+                app:layout_constraintTop_toBottomOf="@id/cl1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:paddingVertical="10dp">
@@ -248,15 +238,12 @@
                     android:id="@+id/tv6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
                     android:text="Imagen: "
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_margin="5dp"
-                    android:textSize="16sp"
+                    style="@style/CardLabel"
                     />
 
                 <TextView
@@ -271,16 +258,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/img_producto"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:scrollHorizontally="true"
-                    android:paddingEnd="10dp"
+                    style="@style/CardText"
                     android:visibility="visible"
                     />
 

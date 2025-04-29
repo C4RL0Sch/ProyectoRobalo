@@ -1,54 +1,81 @@
 package tmz.jcmh.proyecto_robalo.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObject
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.tasks.await
 import tmz.jcmh.proyecto_robalo.data.dao.IProductoDAO
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 
-class ProductoRepository(private val daoProductos: IProductoDAO) {
+class ProductoRepository() {
+    private val db= FirebaseFirestore.getInstance()
+    private val productosRef = db.collection("productos")
+    private val _productos = MutableLiveData<List<Producto>>()
+    val productos : LiveData<List<Producto>> get() = _productos
 
-    fun getAll(): LiveData<List<Producto>> {
-        return daoProductos.getAll()
+
+    init{
+        productosRef.addSnapshotListener{
+            snapshot, error ->
+            if(error==null && snapshot!=null){
+                val lista = snapshot.documents.mapNotNull {
+                    it.toObject(Producto::class.java)
+                }
+                _productos.value = lista
+            }
+        }
+    }
+    /*suspend fun getAll(): List<Producto> {
+        return try {
+            val snapshot = productosRef.get().await()
+            snapshot.toObjects(Producto::class.java)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }*/
+
+    suspend fun getById(id: String): Producto? {
+        return try {
+            val snapshot = productosRef.document(id).get().await()
+            snapshot.toObject(Producto::class.java)
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    fun getAllNow(): List<Producto> {
-        return daoProductos.getAllNow()
+    suspend fun insert(producto: Producto): Boolean {
+        return try {
+            producto.Codigo?.let { productosRef.document(it).set(producto).await() }
+            true
+        } catch (e: Exception) {
+            Log.i("Error", e.message.toString())
+            false
+        }
     }
 
-    suspend fun getById(id: Int): Producto {
-        return daoProductos.getById(id)
+    suspend fun update(producto: Producto): Boolean {
+        return try {
+            producto.Codigo?.let { productosRef.document(it).set(producto).await() }
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    suspend fun getByCode(codigo: String): Producto {
-        return daoProductos.getByCode(codigo)
-    }
-
-    //TODO Colocar este metodo en el reporte
-    suspend fun CountByCodigo(codigo: String): Int {
-        return daoProductos.CountByCodigo(codigo)
-    }
-
-    suspend fun insertRange(productos: List<Producto>) {
-        daoProductos.insertAll(productos)
-    }
-
-    suspend fun insert(producto: Producto) {
-        daoProductos.insert(producto)
-    }
-
-    suspend fun updateRange(productos: List<Producto>) {
-        daoProductos.UpdateAll(productos)
-    }
-
-    suspend fun update(producto: Producto) {
-        daoProductos.Update(producto)
-    }
-
-    suspend fun deleteRange(productos: List<Producto>) {
-        daoProductos.DeleteAll(productos)
-    }
-
-    suspend fun delete(producto: Producto) {
-        daoProductos.Delete(producto)
+    suspend fun delete(producto: Producto):Boolean {
+        return try {
+            producto.Codigo?.let { productosRef.document(it).delete().await() }
+            true
+        }
+        catch (e: Exception) {
+            false
+        }
     }
 
 }

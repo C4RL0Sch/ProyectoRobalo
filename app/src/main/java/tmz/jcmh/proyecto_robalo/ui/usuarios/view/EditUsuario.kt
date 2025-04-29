@@ -53,6 +53,7 @@ class EditUsuario : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditUsuarioBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val adapter = ArrayAdapter.createFromResource(
             this,
@@ -66,14 +67,15 @@ class EditUsuario : AppCompatActivity() {
         if (user != null) {
             lifecycleScope.launch {
                 usuario = usuariosViewModel.getByUser(user)
+
                 binding.txtNombre.setText(usuario.Nombre)
                 binding.txtApellidoP.setText(usuario.ApellidoP)
                 binding.txtApellidoM.setText(usuario.ApellidoM)
                 binding.txtUser.setText(usuario.Usuario)
-                binding.SpinnerTypeUser.setSelection(usuario.Puesto - 1)
+                binding.SpinnerTypeUser.setSelection((usuario.Puesto ?: 1) - 1)
                 binding.txtPassword.setText(usuario.Password)
 
-                val imageFile = usuariosViewModel.getImageFile(usuario.Usuario)
+                val imageFile = usuariosViewModel.getImageFile(usuario.Usuario ?: "")
                 if (imageFile != null && imageFile.exists()) {
                     binding.imgNotFound.visibility = View.GONE
                     binding.img.visibility = View.VISIBLE
@@ -81,126 +83,136 @@ class EditUsuario : AppCompatActivity() {
                     binding.btnDeleteImg.visibility = View.VISIBLE
                 }
             }
-        }
 
-        setContentView(binding.root)
-
-        binding.btnCancel.setOnClickListener() {
-            finish()
-        }
-
-        binding.btnEdit.setOnClickListener() {
-            if (binding.txtNombre.text.toString().isEmpty() || binding.txtApellidoP.text.toString().isEmpty()
-                || binding.txtApellidoM.text.toString().isEmpty() || binding.txtUser.text.toString().isEmpty()
-                || binding.txtPassword.text.toString().isEmpty()
-                || binding.txtPassword2.text.toString().isEmpty()
-            ) {
-                Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            binding.btnCancel.setOnClickListener() {
+                finish()
             }
 
-            val password = binding.txtPassword.text.toString()
-            val passLength = password.length
-            if(password.length<8){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+            binding.btnEdit.setOnClickListener() {
+                if (binding.txtNombre.text.toString()
+                        .isEmpty() || binding.txtApellidoP.text.toString().isEmpty()
+                    || binding.txtApellidoM.text.toString()
+                        .isEmpty() || binding.txtUser.text.toString().isEmpty()
+                    || binding.txtPassword.text.toString().isEmpty()
+                    || binding.txtPassword2.text.toString().isEmpty()
+                ) {
+                    Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-            if(password.replace("[0-9]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+                val password = binding.txtPassword.text.toString()
+                val passLength = password.length
+                if((password.length<8) || (password.replace("[0-9]".toRegex(), "").length == passLength) ||
+                    (password.replace("[a-z]".toRegex(), "").length == passLength) ||
+                    (password.replace("[A-Z]".toRegex(), "").length == passLength)){
+                    binding.PasswordError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
 
-            if(password.replace("[a-z]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+                /*if(password.replace("[0-9]".toRegex(), "").length == passLength){
+                    binding.PasswordError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
 
-            if(password.replace("[A-Z]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+                if(password.replace("[a-z]".toRegex(), "").length == passLength){
+                    binding.PasswordError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
 
-            binding.PasswordError.visibility = View.GONE
+                if(password.replace("[A-Z]".toRegex(), "").length == passLength){
+                    binding.PasswordError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }*/
 
-            if(binding.txtPassword.text.toString() != binding.txtPassword2.text.toString()){
-                binding.PasswordError2.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+                binding.PasswordError.visibility = View.GONE
 
-            binding.PasswordError2.visibility = View.GONE
+                if (binding.txtPassword.text.toString() != binding.txtPassword2.text.toString()) {
+                    binding.PasswordError2.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
 
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar edición")
-                .setMessage("¿Está seguro de que desea guardar los cambios?")
-                .setPositiveButton("Guardar") { dialog, _ ->
-                    usuario.Nombre = binding.txtNombre.text.toString()
-                    usuario.ApellidoP = binding.txtApellidoP.text.toString()
-                    usuario.ApellidoM = binding.txtApellidoM.text.toString()
-                    usuario.Usuario = binding.txtUser.text.toString()
-                    usuario.Password = binding.txtPassword.text.toString()
-                    usuario.Puesto = (binding.SpinnerTypeUser.selectedItemPosition + 1)
+                binding.PasswordError2.visibility = View.GONE
 
-                    usuariosViewModel.deleteImageFile(usuario.Usuario)
-                    if (binding.img.drawable != null) {
-                        // El ImageView tiene imagen
-                        val drawable = binding.img.drawable
-                        val bitmap = (drawable as BitmapDrawable).bitmap
+                if(!usuariosViewModel.isUserAvalible(binding.txtUser.text.toString())){
+                    Toast.makeText(this, "HAY OTRO USUARIO CON EL MISMO NOMBRE DE USUARIO", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-                        usuariosViewModel.saveImage(bitmap, usuario.Usuario)
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar edición")
+                    .setMessage("¿Está seguro de que desea guardar los cambios?")
+                    .setPositiveButton("Guardar") { dialog, _ ->
+                        usuario.Nombre = binding.txtNombre.text.toString()
+                        usuario.ApellidoP = binding.txtApellidoP.text.toString()
+                        usuario.ApellidoM = binding.txtApellidoM.text.toString()
+                        usuario.Usuario = binding.txtUser.text.toString()
+                        usuario.Password = binding.txtPassword.text.toString()
+                        usuario.Puesto = (binding.SpinnerTypeUser.selectedItemPosition + 1)
+
+                        usuariosViewModel.deleteImageFile(usuario.Usuario ?: "")
+                        if (binding.img.drawable != null) {
+                            // El ImageView tiene imagen
+                            val drawable = binding.img.drawable
+                            val bitmap = (drawable as BitmapDrawable).bitmap
+
+                            usuariosViewModel.saveImage(bitmap, usuario.Usuario ?: "")
+                        }
+                        usuariosViewModel.Update(usuario)
+                        dialog.dismiss()
+                        finish()
                     }
-                    usuariosViewModel.Update(usuario)
-                    dialog.dismiss()
-                    finish()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
-        }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
 
-        binding.btnDelete.setOnClickListener() {
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar permanentemente el usuario?")
-                .setPositiveButton("Eliminar") { dialog, _ ->
-                    usuariosViewModel.deleteImageFile(usuario.Usuario)
-                    usuariosViewModel.Delete(usuario)
-                    dialog.dismiss()
-                    finish()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
-        }
+            binding.btnDelete.setOnClickListener() {
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar eliminación")
+                    .setMessage("¿Está seguro de que desea eliminar permanentemente el usuario?")
+                    .setPositiveButton("Eliminar") { dialog, _ ->
+                        usuariosViewModel.deleteImageFile(usuario.Usuario ?: "")
+                        usuariosViewModel.Delete(usuario)
+                        dialog.dismiss()
+                        finish()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
 
-        binding.btnGaleria.setOnClickListener(){
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
+            binding.btnGaleria.setOnClickListener() {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
 
-        binding.btnFoto.setOnClickListener(){
-            solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
-        }
+            binding.btnFoto.setOnClickListener() {
+                solicitarPermisoCamara.launch(android.Manifest.permission.CAMERA)
+            }
 
-        binding.btnDeleteImg.setOnClickListener(){
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar la imagen?")
-                .setPositiveButton("Eliminar") { dialog, _ ->
-                    binding.imgNotFound.visibility = View.VISIBLE
-                    binding.img.visibility = View.GONE
-                    binding.btnDeleteImg.visibility = View.GONE
-                    binding.img.setImageDrawable(null)
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
+            binding.btnDeleteImg.setOnClickListener() {
+                AlertDialog.Builder(this)
+                    .setTitle("Confirmar eliminación")
+                    .setMessage("¿Está seguro de que desea eliminar la imagen?")
+                    .setPositiveButton("Eliminar") { dialog, _ ->
+                        binding.imgNotFound.visibility = View.VISIBLE
+                        binding.img.visibility = View.GONE
+                        binding.btnDeleteImg.visibility = View.GONE
+                        binding.img.setImageDrawable(null)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss() // Cierra el diálogo sin hacer nada
+                    }
+                    .create()
+                    .show()
+            }
+        }
+        else{
+            finish()
         }
     }
     private val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->

@@ -25,7 +25,9 @@ class ProductoAdapter(
         val tvPresentacion: TextView = itemView.findViewById(R.id.tvPresentacion)
         val tvPrecio: TextView = itemView.findViewById(R.id.tvPrecio)
         val tvCantidad: TextView = itemView.findViewById(R.id.tvCantidad)
-        val btnAdd: ImageButton = itemView.findViewById(R.id.img)
+        val tvMarca: TextView = itemView.findViewById(R.id.tvMarca)
+        val tvCategoria: TextView = itemView.findViewById(R.id.tvCategoria)
+        val btnEdit: ImageButton = itemView.findViewById(R.id.img)
         val Img: ImageView = itemView.findViewById(R.id.img_producto)
         val ImgNotFound: TextView = itemView.findViewById(R.id.img_notFound)
     }
@@ -40,9 +42,16 @@ class ProductoAdapter(
         val imageFile = Images[producto.Codigo]
         holder.tvCodigo.text = producto.Codigo
         holder.tvNombre.text = producto.Nombre
-        holder.tvPresentacion.text = producto.Presentacion
         holder.tvPrecio.text = producto.Precio.toString()
-        holder.tvCantidad.text = producto.Cantidad.toString()
+        holder.tvPresentacion.text = "${producto.Presentacion} | ${producto.Medida}"
+        holder.tvMarca.text = producto.Marca
+        holder.tvCategoria.text = producto.Categoria
+        if(producto.Medida=="Pieza"){
+            holder.tvCantidad.text = producto.Cantidad?.toInt().toString()
+        }
+        else{
+            holder.tvCantidad.text = producto.Cantidad.toString()
+        }
 
         if (imageFile != null && imageFile.exists()) {
             holder.ImgNotFound.visibility = View.GONE
@@ -56,7 +65,7 @@ class ProductoAdapter(
             holder.Img.visibility = View.GONE
         }
 
-        holder.btnAdd.setOnClickListener {
+        holder.btnEdit.setOnClickListener {
             val intent = Intent(holder.itemView.context, EditProducto::class.java)
             intent.putExtra("codigo", producto.Codigo)
             holder.itemView.context.startActivity(intent)

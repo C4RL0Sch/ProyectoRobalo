@@ -3,16 +3,16 @@ package tmz.jcmh.proyecto_robalo.data.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-//ETIQUETAS DE ROOM EN DESUSO
-@Entity(tableName = "Productos")
+
 data class Producto(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="idProducto") var id: Int? = null,
-    @ColumnInfo(name="Codigo") var Codigo: String, //AGREGAR AL REPORTE
-    @ColumnInfo(name="Nombre") var Nombre: String,
-    @ColumnInfo(name="Presentación") var Presentacion: String,
-    @ColumnInfo(name="Precio") var Precio: Double,
-    @ColumnInfo(name="Cantidad")var Cantidad: Int,
+    var Codigo: String? = null,
+    var Nombre: String? = null,
+    var Marca: String? = null,
+    var Categoria: String? = null,
+    var Presentacion: String ? = null,
+    var Medida: String ? = null,
+    var Precio: Double ? = 0.0,
+    var Cantidad: Double ? = 0.0,
 ){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -22,7 +22,10 @@ data class Producto(
 
         return Codigo == other.Codigo &&
                 Nombre == other.Nombre &&
+                Marca == other.Marca &&
+                Categoria == other.Categoria &&
                 Presentacion == other.Presentacion &&
+                Medida == other.Medida &&
                 Precio == other.Precio &&
                 Cantidad == other.Cantidad
     }
