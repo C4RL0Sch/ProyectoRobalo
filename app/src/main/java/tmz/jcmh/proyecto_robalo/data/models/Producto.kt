@@ -1,9 +1,5 @@
 package tmz.jcmh.proyecto_robalo.data.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
 data class Producto(
     var Codigo: String? = null,
     var Nombre: String? = null,

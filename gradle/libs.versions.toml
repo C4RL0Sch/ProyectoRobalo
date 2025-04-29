@@ -12,7 +12,6 @@ constraintlayout = "2.2.1"
 firebaseBom = "33.12.0"
 service = "4.4.2"
 crashlytics = "3.0.3"
-dectools-ksp = "2.0.21-1.0.27"
 drawerlayout = "1.2.0"
 
 [libraries]
@@ -33,7 +32,6 @@ androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-devtools-ksp = { id = "com.google.devtools.ksp", version.ref="dectools-ksp"}
 googleServices = {id = "com.google.gms.google-services", version.ref="service"}
 crashlytics = {id = "com.google.firebase.crashlytics", version.ref="crashlytics"}
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

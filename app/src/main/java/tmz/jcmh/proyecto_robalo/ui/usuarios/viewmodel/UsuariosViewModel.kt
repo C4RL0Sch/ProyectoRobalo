@@ -6,17 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tmz.jcmh.proyecto_robalo.data.database.DatabaseRobalo
 import tmz.jcmh.proyecto_robalo.data.models.Usuario
-import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.data.repository.UsuarioRepository
 import tmz.jcmh.proyecto_robalo.util.InternalStorageManager
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class UsuariosViewModel (application: Application) : AndroidViewModel(application){
     private val repository: UsuarioRepository = UsuarioRepository()

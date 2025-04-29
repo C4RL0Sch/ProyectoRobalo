@@ -10,13 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.util.ExcelManager
 import tmz.jcmh.proyecto_robalo.util.InternalStorageManager
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 
 class ProductosViewModel (application: Application) : AndroidViewModel(application) {

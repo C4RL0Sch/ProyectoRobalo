@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.crashlytics)
-    alias(libs.plugins.devtools.ksp)
-    //id("com.google.devtools.ksp")
 }
 
 android {
@@ -65,16 +63,10 @@ dependencies {
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
 
-    //ROOM
-    implementation ("androidx.room:room-runtime:2.5.0")
-    ksp ("androidx.room:room-compiler:2.5.0")
-    implementation ("androidx.room:room-ktx:2.5.0")
-
     // Para soporte de coroutines
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 
-    //TODO reporte
     //Para cargar imagenes asincronamente
     implementation ("com.squareup.picasso:picasso:2.8")
 
