@@ -1,5 +1,6 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.view
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -33,29 +34,18 @@ class AddProducto() : AppCompatActivity() {
     val productoViewModel: ProductosViewModel
         get() = (application as MyApp).productoViewModel
 
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
-        if(uri != null){
-            binding.imgNotFound.visibility = View.GONE
-            binding.img.visibility = View.VISIBLE
-            binding.btnDeleteImg.visibility = View.VISIBLE
-            binding.img.setImageURI(uri)
-        }
-    }
+    private lateinit var progressDialog : ProgressDialog
 
     private var uriFoto: Uri? = null
-
-    private val solicitarPermisoCamara = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            abrirCamara()
-        } else {
-            Toast.makeText(this, "Se requiere permiso para usar la cámara", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddProductoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Espere por favor")
+        progressDialog.setCanceledOnTouchOutside(false)
 
         val medidas = resources.getStringArray(R.array.Medidas)
         val categorias = resources.getStringArray(R.array.Categorias)
@@ -85,8 +75,28 @@ class AddProducto() : AppCompatActivity() {
             binding.txtCodigo.setText(cod)
         }
 
-        productoViewModel.mensaje.observe(this) { msj ->
-            Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+        productoViewModel.mensaje.observe(this){ event ->
+            event.peekContent().let{ msj ->
+                if (msj == "Guardado correctamente"){
+                    finish()
+                }
+            }
+            event.getContentIfNotHandled()?.let { msj ->
+                Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        productoViewModel.loadingMsg.observe(this) { message ->
+            progressDialog.setMessage(message)
+        }
+
+        productoViewModel.isLoading.observe(this){ isLoading ->
+            if(isLoading){
+                progressDialog.show()
+            }
+            else{
+                progressDialog.dismiss()
+            }
         }
 
         binding.btnCancelar.setOnClickListener(){
@@ -95,14 +105,7 @@ class AddProducto() : AppCompatActivity() {
 
         binding.btnGuardar.setOnClickListener(){
             try{
-                if(binding.txtNombre.text.toString().isEmpty() ||
-                    binding.txtMarca.text.isEmpty() || binding.txtPresentacion.text.toString().isEmpty() ||
-                    binding.txtPrecio.text.toString().isEmpty() || binding.txtCantidad.text.toString().isEmpty()){
-                    Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                else if(binding.txtNombre.text.toString().length<3){
-                    Toast.makeText(this, "EL NOMBRE DEL PRODUCTO DEBE DE TENER MÁS DE TRES LETRAS", Toast.LENGTH_SHORT).show()
+                if(!validarCampos()){
                     return@setOnClickListener
                 }
 
@@ -114,40 +117,10 @@ class AddProducto() : AppCompatActivity() {
                     binding.txtPresentacion.text.toString(),
                     binding.SpinnerMedida.selectedItem.toString(),
                     binding.txtPrecio.text.toString().toDouble(),
-                    binding.txtCantidad.text.toString().toDouble(),
+                    binding.txtCantidad.text.toString().toDouble()
                 )
 
-                productoViewModel.insert(nuevo)
-
-                if (binding.img.drawable != null) {
-                    // El ImageView tiene imagen
-                    val drawable = binding.img.drawable
-                    val bitmap = (drawable as BitmapDrawable).bitmap
-
-                    productoViewModel.saveImageToInternalStorage(bitmap, "${binding.txtCodigo.text.toString()}.png")
-                }
-
-                /*lifecycleScope.launch {
-               if(!productoViewModel.insert(nuevo)){
-                   Toast.makeText(getContext(), "HAY OTRO PRODUCTO CON EL MISMO CÓDIGO", Toast.LENGTH_SHORT).show()
-                   return@launch
-               }
-
-               if (binding.img.drawable != null) {
-                   // El ImageView tiene imagen
-                   val drawable = binding.img.drawable
-                   val bitmap = (drawable as BitmapDrawable).bitmap
-
-                   productoViewModel.saveImageToInternalStorage(bitmap, "${binding.txtCodigo.text.toString()}.png")
-               }
-           }*/
-                binding.txtCodigo.setText("")
-                binding.txtNombre.setText("")
-                binding.txtMarca.setText("")
-                binding.txtPresentacion.setText("")
-                binding.txtPrecio.setText("")
-                binding.txtCantidad.setText("")
-                finish()
+                guardarProducto(nuevo)
             }
             catch(e: IOException){
                 Toast.makeText(getContext(), "Error al guardar el producto", Toast.LENGTH_SHORT).show()
@@ -164,21 +137,58 @@ class AddProducto() : AppCompatActivity() {
         }
 
         binding.btnDeleteImg.setOnClickListener(){
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Está seguro de que desea eliminar la imagen?")
-                .setPositiveButton("Eliminar") { dialog, _ ->
-                    binding.imgNotFound.visibility = View.VISIBLE
-                    binding.img.visibility = View.GONE
-                    binding.btnDeleteImg.visibility = View.GONE
-                    binding.img.setImageDrawable(null)
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss() // Cierra el diálogo sin hacer nada
-                }
-                .create()
-                .show()
+            showDialog()
+        }
+    }
+
+    private fun guardarProducto(nuevo: Producto){
+        if(uriFoto!=null) {
+            productoViewModel.insertWithImage(nuevo, contentResolver, uriFoto!!)
+            return
+        }
+
+        productoViewModel.insert(nuevo)
+    }
+
+    private fun validarCampos(): Boolean{
+        if(binding.txtNombre.text.toString().isEmpty() ||
+            binding.txtMarca.text.isEmpty() || binding.txtPresentacion.text.toString().isEmpty() ||
+            binding.txtPrecio.text.toString().isEmpty() || binding.txtCantidad.text.toString().isEmpty()){
+            Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        else if(binding.txtNombre.text.toString().length<3){
+            Toast.makeText(this, "EL NOMBRE DEL PRODUCTO DEBE DE TENER MÁS DE TRES LETRAS", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+
+    private fun showDialog(){
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Está seguro de que desea eliminar la imagen?")
+            .setPositiveButton("Eliminar") { dialog, _ ->
+                binding.imgNotFound.visibility = View.VISIBLE
+                binding.img.visibility = View.GONE
+                binding.btnDeleteImg.visibility = View.GONE
+                binding.img.setImageDrawable(null)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss() // Cierra el diálogo sin hacer nada
+            }
+            .create()
+            .show()
+    }
+
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
+        if(uri != null){
+            binding.imgNotFound.visibility = View.GONE
+            binding.img.visibility = View.VISIBLE
+            binding.btnDeleteImg.visibility = View.VISIBLE
+            binding.img.setImageURI(uri)
+            uriFoto = uri
         }
     }
 
@@ -192,6 +202,14 @@ class AddProducto() : AppCompatActivity() {
             }
         } else {
             Toast.makeText(this, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val solicitarPermisoCamara = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            abrirCamara()
+        } else {
+            Toast.makeText(this, "Se requiere permiso para usar la cámara", Toast.LENGTH_SHORT).show()
         }
     }
 

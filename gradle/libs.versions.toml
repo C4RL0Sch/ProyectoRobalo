@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.2"
 kotlin = "2.1.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -13,6 +13,11 @@ firebaseBom = "33.12.0"
 service = "4.4.2"
 crashlytics = "3.0.3"
 drawerlayout = "1.2.0"
+picasso="2.8"
+poi="5.2.3"
+lifecycle="2.8.6"
+fragment="1.8.5"
+glide="4.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,11 +29,22 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+picasso = {module="com.squareup.picasso:picasso", version.ref="picasso"}
+glide={module="com.github.bumptech.glide:glide", version.ref="glide"}
+
+apache-poi={module="org.apache.poi:poi", version.ref="poi"}
+apache-poi-ooxml={module="org.apache.poi:poi-ooxml", version.ref="poi"}
+lifecycle-runtime-ktx={module="androidx.lifecycle:lifecycle-runtime-ktx", version.ref="lifecycle"}
+coroutines={module="org.jetbrains.kotlinx:kotlinx-coroutines-core"}
+fragment={module="androidx.fragment:fragment", version.ref="fragment"}
+androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
+
 firebase-bom = {module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}
 firebase-crashlytics = {module = "com.google.firebase:firebase-crashlytics"}
 firebase-auth = {module = "com.google.firebase:firebase-auth-ktx"}
 firebase-firestore = {module = "com.google.firebase:firebase-firestore"}
-androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
+firebase-storage = {module = "com.google.firebase:firebase-storage-ktx"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

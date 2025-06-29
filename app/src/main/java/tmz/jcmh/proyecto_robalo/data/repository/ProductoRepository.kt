@@ -13,7 +13,6 @@ class ProductoRepository() {
     private val _productos = MutableLiveData<List<Producto>>()
     val productos : LiveData<List<Producto>> get() = _productos
 
-
     init{
         productosRef.addSnapshotListener{
             snapshot, error ->
@@ -25,27 +24,20 @@ class ProductoRepository() {
             }
         }
     }
-    /*suspend fun getAll(): List<Producto> {
-        return try {
-            val snapshot = productosRef.get().await()
-            snapshot.toObjects(Producto::class.java)
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }*/
 
     suspend fun getById(id: String): Producto? {
         return try {
             val snapshot = productosRef.document(id).get().await()
             snapshot.toObject(Producto::class.java)
         } catch (e: Exception) {
+            Log.i("Error", e.message.toString())
             null
         }
     }
 
     suspend fun insert(producto: Producto): Boolean {
         return try {
-            producto.Codigo?.let { productosRef.document(it).set(producto).await() }
+            producto.Codigo.let { productosRef.document(it).set(producto).await() }
             true
         } catch (e: Exception) {
             Log.i("Error", e.message.toString())
@@ -55,19 +47,21 @@ class ProductoRepository() {
 
     suspend fun update(producto: Producto): Boolean {
         return try {
-            producto.Codigo?.let { productosRef.document(it).set(producto).await() }
+            producto.Codigo.let { productosRef.document(it).set(producto).await() }
             true
         } catch (e: Exception) {
+            Log.i("Error", e.message.toString())
             false
         }
     }
 
     suspend fun delete(producto: Producto):Boolean {
         return try {
-            producto.Codigo?.let { productosRef.document(it).delete().await() }
+            producto.Codigo.let { productosRef.document(it).delete().await() }
             true
         }
         catch (e: Exception) {
+            Log.i("Error", e.message.toString())
             false
         }
     }

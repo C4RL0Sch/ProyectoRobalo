@@ -58,18 +58,20 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     //apache POI
-    implementation("org.apache.poi:poi:5.2.3")
-    implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation(libs.apache.poi)
+    implementation(libs.apache.poi.ooxml)
 
     // Para soporte de coroutines
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation (libs.lifecycle.runtime.ktx)
+    implementation (libs.coroutines)
 
     //Para cargar imagenes asincronamente
-    implementation ("com.squareup.picasso:picasso:2.8")
+    implementation (libs.picasso)
+    implementation(libs.glide)
 
     //PARA MENEJO DE FRAGMENTOS
-    implementation("androidx.fragment:fragment:1.8.5")
+    implementation(libs.fragment)
 }

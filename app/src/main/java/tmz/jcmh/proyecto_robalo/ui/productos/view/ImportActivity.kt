@@ -54,8 +54,10 @@ class ImportActivity : AppCompatActivity() {
         }
 
         // Observa mensajes (para Toast u otras notificaciones)
-        viewModel.mensaje.observe(this) { msj ->
-            Toast.makeText(this, msj, Toast.LENGTH_SHORT).show()
+        viewModel.mensaje.observe(this) { event ->
+            event.getContentIfNotHandled()?.let { msj ->
+                Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+            }
         }
 
         // Botones Confirmar/Cancelar

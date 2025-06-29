@@ -34,24 +34,12 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ProductoAdapter(emptyList(), emptyMap())
+        adapter = ProductoAdapter(emptyList())
 
         productoViewModel.allProductos.observe(viewLifecycleOwner, Observer {
-            val images: Map<String, File> = it.mapNotNull { producto ->
-                val imageFile = productoViewModel.getImageFile(producto.Codigo?:"")
-                if (imageFile != null) {
-                    (producto.Codigo?:"") to imageFile
-                } else {
-                    null
-                }
-            }.toMap()
-            adapter.UpdateList(it, images)
+            adapter.UpdateList(it)
             binding.rvListaRegistros.adapter = adapter
         })
-
-        productoViewModel.mensaje.observe(viewLifecycleOwner) { msj ->
-            Toast.makeText(requireContext(), msj, Toast.LENGTH_LONG).show()
-        }
 
         binding.btnAdd.setOnClickListener {
             val intent = Intent(requireContext(), AddProducto::class.java)

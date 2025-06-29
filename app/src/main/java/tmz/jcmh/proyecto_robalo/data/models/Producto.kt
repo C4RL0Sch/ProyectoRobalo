@@ -1,14 +1,15 @@
 package tmz.jcmh.proyecto_robalo.data.models
 
 data class Producto(
-    var Codigo: String? = null,
-    var Nombre: String? = null,
-    var Marca: String? = null,
-    var Categoria: String? = null,
-    var Presentacion: String ? = null,
-    var Medida: String ? = null,
-    var Precio: Double ? = 0.0,
-    var Cantidad: Double ? = 0.0,
+    var Codigo: String = "",
+    var Nombre: String = "",
+    var Marca: String = "",
+    var Categoria: String = "",
+    var Presentacion: String = "",
+    var Medida: String = "",
+    var Precio: Double = 0.0,
+    var Cantidad: Double = 0.0,
+    var imgUrl: String? = null
 ){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

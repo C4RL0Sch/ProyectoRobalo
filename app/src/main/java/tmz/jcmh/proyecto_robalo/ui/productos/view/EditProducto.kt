@@ -1,5 +1,6 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.view
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -16,6 +17,7 @@ import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.R
@@ -31,16 +33,20 @@ class EditProducto : AppCompatActivity() {
 
     private lateinit var producto: Producto
 
+    private lateinit var progressDialog : ProgressDialog
+
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
         if(uri != null){
             binding.imgNotFound.visibility = View.GONE
             binding.img.visibility = View.VISIBLE
             binding.btnDeleteImg.visibility = View.VISIBLE
             binding.img.setImageURI(uri)
+            uriFoto = uri
         }
     }
 
     private var uriFoto: Uri? = null
+    private var lastUri: Uri? = null
 
     private val solicitarPermisoCamara = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
@@ -55,15 +61,19 @@ class EditProducto : AppCompatActivity() {
         binding = ActivityEditProductoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val medidas = resources.getStringArray(R.array.Medidas)
-        val categorias = resources.getStringArray(R.array.Categorias)
-
-        binding.SpinnerCategoria.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
-        binding.SpinnerMedida.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medidas)
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Espere por favor")
+        progressDialog.setCanceledOnTouchOutside(false)
 
         val codigo = intent.getStringExtra("codigo")
 
         if (codigo != null) {
+            val medidas = resources.getStringArray(R.array.Medidas)
+            val categorias = resources.getStringArray(R.array.Categorias)
+
+            binding.SpinnerCategoria.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
+            binding.SpinnerMedida.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medidas)
+
             lifecycleScope.launch {
                 producto = productoViewModel.getByCode(codigo)
                 binding.txtCodigo.setText(producto.Codigo)
@@ -75,12 +85,42 @@ class EditProducto : AppCompatActivity() {
                 binding.SpinnerMedida.setSelection(medidas.indexOf(producto.Medida))
                 binding.SpinnerCategoria.setSelection(categorias.indexOf(producto.Categoria))
 
-                val imageFile = productoViewModel.getImageFile(producto.Codigo ?: "")
-                if (imageFile != null && imageFile.exists()) {
+                if (producto.imgUrl != null) {
                     binding.imgNotFound.visibility = View.GONE
                     binding.img.visibility = View.VISIBLE
-                    binding.img.setImageURI(Uri.fromFile(imageFile))
                     binding.btnDeleteImg.visibility = View.VISIBLE
+
+                    lastUri = Uri.parse(producto.imgUrl)
+                    uriFoto = Uri.parse(producto.imgUrl)
+
+                    Glide
+                        .with(this@EditProducto)
+                        .load(lastUri)
+                        .into(binding.img)
+                }
+            }
+
+            productoViewModel.mensaje.observe(this) { event ->
+                event.peekContent().let{ msj ->
+                    if (msj == "Producto actualizado correctamente" || msj == "Producto eliminado correctamente"){
+                        finish()
+                    }
+                }
+                event.getContentIfNotHandled()?.let { msj ->
+                    Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            productoViewModel.loadingMsg.observe(this) { message ->
+                progressDialog.setMessage(message)
+            }
+
+            productoViewModel.isLoading.observe(this){ isLoading ->
+                if(isLoading){
+                    progressDialog.show()
+                }
+                else{
+                    progressDialog.dismiss()
                 }
             }
 
@@ -89,14 +129,7 @@ class EditProducto : AppCompatActivity() {
             }
 
             binding.btnEdit.setOnClickListener() {
-                if (binding.txtCodigo.text.toString().isEmpty() || binding.txtNombre.text.toString()
-                        .isEmpty() ||
-                    binding.txtPresentacion.text.toString()
-                        .isEmpty() || binding.txtPrecio.text.toString().isEmpty() ||
-                    binding.txtCantidad.text.toString()
-                        .isEmpty() || binding.txtMarca.text.toString().isEmpty()
-                ) {
-                    Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+                if(!validarCampos()){
                     return@setOnClickListener
                 }
 
@@ -104,7 +137,6 @@ class EditProducto : AppCompatActivity() {
                     .setTitle("Confirmar edición")
                     .setMessage("¿Está seguro de que desea guardar los cambios?")
                     .setPositiveButton("Guardar") { dialog, _ ->
-                        producto.Codigo = binding.txtCodigo.text.toString()
                         producto.Nombre = binding.txtNombre.text.toString()
                         producto.Marca = binding.txtMarca.text.toString()
                         producto.Categoria = binding.SpinnerCategoria.selectedItem.toString()
@@ -113,20 +145,9 @@ class EditProducto : AppCompatActivity() {
                         producto.Precio = binding.txtPrecio.text.toString().toDouble()
                         producto.Cantidad = binding.txtCantidad.text.toString().toDouble()
 
-                        productoViewModel.deleteImageFile(producto.Codigo ?: "")
-                        if (binding.img.drawable != null) {
-                            // El ImageView tiene imagen
-                            val drawable = binding.img.drawable
-                            val bitmap = (drawable as BitmapDrawable).bitmap
+                        save()
 
-                            productoViewModel.saveImageToInternalStorage(
-                                bitmap,
-                                producto.Codigo ?: ""
-                            )
-                        }
-                        productoViewModel.Update(producto)
                         dialog.dismiss()
-                        finish()
                     }
                     .setNegativeButton("Cancelar") { dialog, _ ->
                         dialog.dismiss() // Cierra el diálogo sin hacer nada
@@ -182,6 +203,35 @@ class EditProducto : AppCompatActivity() {
             finish()
         }
 
+    }
+
+    private fun save(){
+        if (uriFoto != null && uriFoto != lastUri) {
+            productoViewModel.UpdateWithImage(producto, contentResolver, uriFoto!!)
+            return
+        }
+        else if(uriFoto != lastUri){
+            productoViewModel.deleteCloudImage(producto.Codigo)
+            producto.imgUrl = null
+            productoViewModel.Update(producto)
+        }
+        else{
+            productoViewModel.Update(producto)
+        }
+    }
+
+    private fun validarCampos(): Boolean{
+        if (binding.txtCodigo.text.toString().isEmpty() || binding.txtNombre.text.toString()
+                .isEmpty() ||
+            binding.txtPresentacion.text.toString()
+                .isEmpty() || binding.txtPrecio.text.toString().isEmpty() ||
+            binding.txtCantidad.text.toString()
+                .isEmpty() || binding.txtMarca.text.toString().isEmpty()
+        ) {
+            Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->

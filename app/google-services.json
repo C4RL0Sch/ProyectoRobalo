@@ -12,7 +12,20 @@
           "package_name": "tmz.jcmh.proyecto_robalo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "934589331406-2jf49msun1pegdl9u97jhqp0j4p2r7l1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tmz.jcmh.proyecto_robalo",
+            "certificate_hash": "61b75af91d9b3259f13d77e7cf5ccce753169593"
+          }
+        },
+        {
+          "client_id": "934589331406-n2j59i3k04o7495tln2emdh96r2ju0on.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyClytDrqIsRA7JtlTQV6EU9KH5KwnGQfeI"
@@ -20,7 +33,49 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934589331406-n2j59i3k04o7495tln2emdh96r2ju0on.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934589331406:android:aae9a87dd81c2e21ae5d9f",
+        "android_client_info": {
+          "package_name": "tmz.jcmh.tienda_robalo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934589331406-k2v1p9gs8o7gglcl78vu0ne44bs6iuth.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tmz.jcmh.tienda_robalo",
+            "certificate_hash": "61b75af91d9b3259f13d77e7cf5ccce753169593"
+          }
+        },
+        {
+          "client_id": "934589331406-n2j59i3k04o7495tln2emdh96r2ju0on.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClytDrqIsRA7JtlTQV6EU9KH5KwnGQfeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934589331406-n2j59i3k04o7495tln2emdh96r2ju0on.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

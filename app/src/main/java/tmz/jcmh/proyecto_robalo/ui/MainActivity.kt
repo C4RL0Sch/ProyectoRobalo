@@ -6,9 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -116,8 +114,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         //OBSERVADORES DEL VIEWMODEL
-        productoViewModel.mensaje.observe(this) { msj ->
-            Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+        productoViewModel.mensaje.observe(this) { event ->
+            event.getContentIfNotHandled()?.let { msj ->
+                Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+            }
         }
 
         productoViewModel.lecturaFinalizada.observe(this) { finalizada ->

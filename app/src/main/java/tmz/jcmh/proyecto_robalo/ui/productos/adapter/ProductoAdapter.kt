@@ -1,6 +1,7 @@
 package tmz.jcmh.proyecto_robalo.ui.productos.adapter
 
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.data.models.Producto
@@ -15,8 +17,7 @@ import tmz.jcmh.proyecto_robalo.ui.productos.view.EditProducto
 import java.io.File
 
 class ProductoAdapter(
-    private var listaProductos: List<Producto>,
-    private var Images: Map<String, File>
+    private var listaProductos: List<Producto>
 ): RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
@@ -39,7 +40,6 @@ class ProductoAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val producto = listaProductos[position]
-        val imageFile = Images[producto.Codigo]
         holder.tvCodigo.text = producto.Codigo
         holder.tvNombre.text = producto.Nombre
         holder.tvPrecio.text = producto.Precio.toString()
@@ -53,12 +53,15 @@ class ProductoAdapter(
             holder.tvCantidad.text = producto.Cantidad.toString()
         }
 
-        if (imageFile != null && imageFile.exists()) {
+        if ( producto.imgUrl != null) {
             holder.ImgNotFound.visibility = View.GONE
             holder.Img.visibility = View.VISIBLE
 
-            Picasso.get()
-                .load(imageFile)
+            val uri = Uri.parse(producto.imgUrl)
+
+            Glide
+                .with(holder.itemView.context)
+                .load(uri)
                 .into(holder.Img)
         }else {
             holder.ImgNotFound.visibility = View.VISIBLE
@@ -76,8 +79,7 @@ class ProductoAdapter(
         return listaProductos.size
     }
 
-    fun UpdateList(new_list: List<Producto>, new_images: Map<String, File>){
+    fun UpdateList(new_list: List<Producto>){
         listaProductos = new_list
-        Images = new_images
     }
 }
