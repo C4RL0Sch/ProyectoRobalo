@@ -23,7 +23,7 @@
         android:theme="@style/Theme.Proyecto_Robalo"
         tools:targetApi="31">
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.usuarios.view.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

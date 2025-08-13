@@ -10,8 +10,12 @@ import tmz.jcmh.proyecto_robalo.data.models.Usuario
 class UsuarioRepository() {
     private val db= FirebaseFirestore.getInstance()
     private val usuariosRef = db.collection("usuarios")
+
     private val _usuarios = MutableLiveData<List<Usuario>>()
     val usuarios : LiveData<List<Usuario>> get() = _usuarios
+
+    private val _logUser = MutableLiveData<Usuario?>()
+    val logUser: LiveData<Usuario?> = _logUser
 
     init{
         usuariosRef.addSnapshotListener{
@@ -23,6 +27,10 @@ class UsuarioRepository() {
                 _usuarios.value = lista
             }
         }
+    }
+
+    fun login(user: Usuario){
+        _logUser.value = user
     }
 
     suspend fun getByUser(user: String): Usuario {

@@ -7,20 +7,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.data.models.Usuario
 import tmz.jcmh.proyecto_robalo.data.repository.UsuarioRepository
 import tmz.jcmh.proyecto_robalo.util.InternalStorageManager
 import java.io.File
 
 class UsuariosViewModel (application: Application) : AndroidViewModel(application){
-    private val repository: UsuarioRepository = UsuarioRepository()
-    val allUsuarios: LiveData<List<Usuario>>
+    private val repository: UsuarioRepository
+        get() = (getApplication() as MyApp).usuarioRepository
 
-    private val _logUser = MutableLiveData<Usuario?>()
-    val logUser: LiveData<Usuario?> = _logUser
+    val allUsuarios = repository.usuarios
 
-    private val _isLoged = MutableLiveData<Boolean>()
-    val isLoged: LiveData<Boolean> = _isLoged
+    val logUser = repository.logUser
 
     // LiveData para controlar errores o mensajes
     private val _mensaje = MutableLiveData<String>()
@@ -28,55 +27,9 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
 
     val internalManager = InternalStorageManager()
 
-    init{
-        allUsuarios = repository.usuarios
-    }
-
-    fun login(username: String, password: String){
-        viewModelScope.launch {
-            val user = repository.getByUser(username)
-            if(user!=null && user.Password==password){
-                _logUser.postValue(user)
-                _isLoged.postValue(true)
-            }
-            else{
-                _logUser.postValue(null)
-                _isLoged.postValue(false)
-            }
-        }
-    }
-
-    fun isUserAvalible(usuario: String): Boolean{
-        val lista = allUsuarios.value?.toList()
-        val user = lista?.find { p-> p.Usuario == usuario }
-        if(user == null){
-            return true
-        }
-        else{
-            return false
-        }
-    }
-
-    suspend fun getByUser(user: String): Usuario{
-        val usuario = repository.getByUser(user)
-        return usuario
-    }
-
     fun insert(usuario: Usuario){
         viewModelScope.launch {
             repository.insert(usuario)
-        }
-    }
-
-    fun Delete(usuario: Usuario){
-        viewModelScope.launch {
-            repository.delete(usuario)
-        }
-    }
-
-    fun Update(usuario: Usuario){
-        viewModelScope.launch {
-            repository.update(usuario)
         }
     }
 

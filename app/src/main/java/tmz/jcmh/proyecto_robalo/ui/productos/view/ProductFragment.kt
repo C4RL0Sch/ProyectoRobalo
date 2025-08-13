@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.databinding.FragmentProductBinding
@@ -19,8 +20,7 @@ class ProductFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: ProductoAdapter
-    private val productoViewModel: ProductosViewModel
-        get() = (requireActivity().application as MyApp).productoViewModel
+    private val productoViewModel: ProductosViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

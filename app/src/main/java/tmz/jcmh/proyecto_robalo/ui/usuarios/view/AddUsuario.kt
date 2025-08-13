@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -22,13 +23,13 @@ import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.data.models.Usuario
 import tmz.jcmh.proyecto_robalo.databinding.ActivityAddUsuarioBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
+import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.AddUsuarioViewModel
 import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 import java.io.File
 
 class AddUsuario : AppCompatActivity() {
     private lateinit var binding: ActivityAddUsuarioBinding
-    val usuariosViewModel: UsuariosViewModel
-        get() = (application as MyApp).usuarioViewModel
+    val usuariosViewModel: AddUsuarioViewModel by viewModels()
 
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
         if(uri != null){
@@ -36,6 +37,7 @@ class AddUsuario : AppCompatActivity() {
             binding.img.visibility = View.VISIBLE
             binding.btnDeleteImg.visibility = View.VISIBLE
             binding.img.setImageURI(uri)
+            uriFoto = uri
         }
     }
 
@@ -62,45 +64,10 @@ class AddUsuario : AppCompatActivity() {
         }
 
         binding.btnGuardar.setOnClickListener(){
-            if(binding.txtNombre.text.toString().isEmpty() || binding.txtApellidoP.text.toString().isEmpty() || binding.txtApellidoM.text.toString().isEmpty() ||
-                        binding.txtUser.text.toString().isEmpty() || binding.txtPassword.text.toString().isEmpty() || binding.txtPassword2.text.toString().isEmpty())
-            {
-                Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+
+            if(!validar()){
                 return@setOnClickListener
             }
-
-            val password = binding.txtPassword.text.toString()
-            val passLength = password.length
-            if((password.length<8) || (password.replace("[0-9]".toRegex(), "").length == passLength) ||
-                (password.replace("[a-z]".toRegex(), "").length == passLength) ||
-                (password.replace("[A-Z]".toRegex(), "").length == passLength)){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            /*if(password.replace("[0-9]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            if(password.replace("[a-z]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            if(password.replace("[A-Z]".toRegex(), "").length == passLength){
-                binding.PasswordError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }*/
-
-            binding.PasswordError.visibility = View.GONE
-
-            if(binding.txtPassword.text.toString() != binding.txtPassword2.text.toString()){
-                binding.PasswordError2.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            binding.PasswordError2.visibility = View.GONE
 
             val nuevo = Usuario(
                 binding.txtUser.text.toString(),
@@ -111,20 +78,18 @@ class AddUsuario : AppCompatActivity() {
                 (binding.SpinnerTypeUser.selectedItemPosition+1)
             )
 
-            if(!usuariosViewModel.isUserAvalible(nuevo.Usuario?:"")){
+            if(!usuariosViewModel.isUserAvalible(nuevo.Usuario)){
                 Toast.makeText(getContext(), "HAY OTRO USUARIO CON EL MISMO NOMBRE DE USUARIO", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             else{
-                usuariosViewModel.insert(nuevo)
+                save(nuevo)
             }
 
             if (binding.img.drawable != null) {
                 // El ImageView tiene imagen
                 val drawable = binding.img.drawable
                 val bitmap = (drawable as BitmapDrawable).bitmap
-
-                usuariosViewModel.saveImage(bitmap, nuevo.Usuario?:"")
             }
 
             binding.txtNombre.setText("")
@@ -152,6 +117,7 @@ class AddUsuario : AppCompatActivity() {
                     binding.img.visibility = View.GONE
                     binding.btnDeleteImg.visibility = View.GONE
                     binding.img.setImageDrawable(null)
+                    uriFoto = null
                     dialog.dismiss()
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->
@@ -160,6 +126,44 @@ class AddUsuario : AppCompatActivity() {
                 .create()
                 .show()
         }
+    }
+
+    private fun save (nuevo: Usuario){
+        if(uriFoto!=null) {
+            usuariosViewModel.insertWithImage(nuevo, contentResolver, uriFoto!!)
+            return
+        }
+
+        usuariosViewModel.insert(nuevo)
+    }
+
+    private fun validar(): Boolean{
+        if(binding.txtNombre.text.toString().isEmpty() || binding.txtApellidoP.text.toString().isEmpty() || binding.txtApellidoM.text.toString().isEmpty() ||
+            binding.txtUser.text.toString().isEmpty() || binding.txtPassword.text.toString().isEmpty() || binding.txtPassword2.text.toString().isEmpty())
+        {
+            Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val password = binding.txtPassword.text.toString()
+        val passLength = password.length
+        if((password.length<8) || (password.replace("[0-9]".toRegex(), "").length == passLength) ||
+            (password.replace("[a-z]".toRegex(), "").length == passLength) ||
+            (password.replace("[A-Z]".toRegex(), "").length == passLength)){
+            binding.PasswordError.visibility = View.VISIBLE
+            return false
+        }
+
+        binding.PasswordError.visibility = View.GONE
+
+        if(binding.txtPassword.text.toString() != binding.txtPassword2.text.toString()){
+            binding.PasswordError2.visibility = View.VISIBLE
+            return false
+        }
+
+        binding.PasswordError2.visibility = View.GONE
+
+        return true
     }
 
     private fun abrirCamara() {

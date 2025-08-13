@@ -1,10 +1,11 @@
 package tmz.jcmh.proyecto_robalo.data.models
 
 data class Usuario (
-    var Usuario: String? = null,
-    var Nombre: String? = null,
-    var ApellidoP: String? = null,
-    var ApellidoM: String? = null,
-    var Password: String? = null,
-    var Puesto: Int? = null,
+    var Usuario: String = "",
+    var Nombre: String = "",
+    var ApellidoP: String = "",
+    var ApellidoM: String = "",
+    var Password: String = "",
+    var Puesto: Int = 0,
+    var imgUrl: String? = null
 )

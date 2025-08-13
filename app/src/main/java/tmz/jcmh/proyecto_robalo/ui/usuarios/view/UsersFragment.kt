@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.R
@@ -20,9 +21,9 @@ class UsersFragment : Fragment() {
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
 
+    private val usuarioViewModel: UsuariosViewModel by activityViewModels()
+
     private lateinit var adapter: UsuarioAdapter
-    private val usuarioViewModel: UsuariosViewModel
-        get() = (requireActivity().application as MyApp).usuarioViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

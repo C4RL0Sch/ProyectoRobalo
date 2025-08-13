@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.util.CloudStorageManager
@@ -22,17 +23,18 @@ import java.io.IOException
 class ProductosViewModel (application: Application) : AndroidViewModel(application) {
 
     private val repository: ProductoRepository
-    val allProductos: LiveData<List<Producto>>
+        get() = (getApplication() as MyApp).productoRepository
 
-    // Tres listas distintas o un único objeto que las agrupe
-    private val _productosNuevos = MutableLiveData<List<Producto>>()
-    val productosNuevos: LiveData<List<Producto>> = _productosNuevos
+    val allProductos = repository.productos
 
-    private val _productosModificados = MutableLiveData<List<Producto>>()
-    val productosModificados: LiveData<List<Producto>> = _productosModificados
+    private val _productosNuevos = repository._productosNuevos
+    val productosNuevos = repository.productosNuevos
 
-    private val _productosEliminados = MutableLiveData<List<Producto>>()
-    val productosEliminados: LiveData<List<Producto>> = _productosEliminados
+    private val _productosModificados = repository._productosModificados
+    val productosModificados = repository.productosModificados
+
+    private val _productosEliminados = repository._productosEliminados
+    val productosEliminados = repository.productosEliminados
 
     // LiveData para controlar errores o mensajes
     private val _mensaje = MutableLiveData<Event<String>>()
@@ -48,127 +50,8 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
     val cloudManager = CloudStorageManager()
 
     init {
-        repository = ProductoRepository()
-        allProductos = repository.productos
         isLoading.value = false
         loadingMsg.value = "Espere por favor"
-    }
-
-    fun countByCode(codigo: String): Int?{
-        val lista = allProductos.value?.toList()
-        val cont = lista?.count { p -> p.Codigo.contains(codigo) == true }
-        return cont
-    }
-
-    suspend fun getByCode(codigo: String): Producto{
-        val producto = repository.getById(codigo)
-        if(producto==null){
-            return Producto()
-        }
-        return producto
-    }
-
-    fun insert(producto: Producto) {
-        viewModelScope.launch {
-            val prod = repository.getById(producto.Codigo)
-
-            if (prod == null) {
-                isLoading.value = true
-                loadingMsg.value = "Guardando el producto"
-                val resp = repository.insert(producto)
-                if(!resp){
-                    _mensaje.value = Event("No se puedo guardar la el producto")
-                }
-                else{
-                    _mensaje.value = Event("Guardado correctamente")
-                }
-                isLoading.value = false
-            } else {
-                throw IOException("Error al guardar el producto")
-            }
-        }
-    }
-
-    fun insertWithImage(producto: Producto, contentResolver: ContentResolver, uri: Uri){
-        viewModelScope.launch {
-            val prod = repository.getById(producto.Codigo)
-
-            if (prod == null) {
-                isLoading.value = true
-                loadingMsg.value = "Guardando el producto"
-                val res = cloudManager.saveImage(contentResolver, "productos", uri, producto.Codigo)
-                if(res==""){
-                    _mensaje.value = Event("No se puedo guardar la imagen")
-                }
-                else{
-                    producto.imgUrl  = res
-                }
-
-                val resp = repository.insert(producto)
-                if(!resp){
-                    _mensaje.value = Event("No se puedo guardar la el producto")
-                }
-                else{
-                    _mensaje.value = Event("Guardado correctamente")
-                }
-                isLoading.value = false
-            } else {
-               _mensaje.value = Event("Ya existe un Producto con el mismo codigo")
-            }
-        }
-    }
-
-    fun Update(producto: Producto){
-        viewModelScope.launch {
-            isLoading.value = true
-            loadingMsg.value = "Actualizando el producto"
-            val res = repository.update(producto)
-            if(res){
-                _mensaje.value = Event("Producto actualizado correctamente")
-            }
-            else{
-                _mensaje.value = Event("Error al actualizar el producto")
-            }
-            isLoading.value = false
-        }
-    }
-
-    fun UpdateWithImage(producto: Producto, contentResolver: ContentResolver, uri: Uri){
-        viewModelScope.launch {
-            isLoading.value = true
-            loadingMsg.value = "Actualizando el producto"
-            val resp = cloudManager.saveImage(contentResolver, "productos", uri, producto.Codigo)
-            if(resp==""){
-                _mensaje.value = Event("No se puedo actualizar la imagen")
-            }
-            else{
-                producto.imgUrl  = resp
-            }
-
-            val res = repository.update(producto)
-            if(res){
-                _mensaje.value = Event("Producto actualizado correctamente")
-            }
-            else{
-                _mensaje.value = Event("Event(Error al actualizar el producto")
-            }
-            isLoading.value = false
-        }
-    }
-
-    fun Delete(producto: Producto){
-        viewModelScope.launch {
-            isLoading.value = true
-            loadingMsg.value = "Eliminando el producto"
-            val res = repository.delete(producto)
-            if(res){
-                _mensaje.postValue(Event("Producto eliminado correctamente"))
-            }
-            else{
-                _mensaje.postValue(Event("Error al eliminar el producto"))
-            }
-            isLoading.value = false
-        }
     }
 
     fun exportarExcel(uri: Uri, contentResolver: ContentResolver) {
@@ -226,18 +109,18 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                 val tmpEliminados = mapaActual.values.toList() // Todo lo que queda no vino en Excel
 
                 // 4. Publicar listas en LiveData
-                _productosNuevos.postValue(tmpNuevos)
-                _productosModificados.postValue(tmpModificados)
-                _productosEliminados.postValue(tmpEliminados)
+                _productosNuevos.value = tmpNuevos
+                _productosModificados.value = tmpModificados
+                _productosEliminados.value = tmpEliminados
 
                 // Avisar a la UI que se leyó correctamente
-                _mensaje.postValue(Event("Archivo cargado. Revisa y confirma cambios."))
+                _mensaje.value = Event("Archivo cargado. Revisa y confirma cambios.")
 
                 lecturaFinalizada.postValue(true)
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                //_mensaje.postValue("Ocurrió un error al leer el Excel. Verifica el formato.")
+                _mensaje.value = Event("Ocurrió un error al leer el Excel. Verifica el formato.")
                 _mensaje.postValue(Event(e.message!!))
                 lecturaFinalizada.postValue(false)
             }
@@ -277,10 +160,6 @@ class ProductosViewModel (application: Application) : AndroidViewModel(applicati
                 _mensaje.value = Event("Error al guardar la imagen")
             }
         }
-    }
-
-    fun deleteCloudImage(Filename: String){
-        cloudManager.deleteImageFile("productos", Filename)
     }
 
     fun saveImageToInternalStorage(bitmap: Bitmap, Filename: String){

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -25,14 +26,14 @@ import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.databinding.ActivityAddProductoBinding
+import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.AddProductoViewModel
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import java.io.File
 import java.io.IOException
 
 class AddProducto() : AppCompatActivity() {
     private lateinit var binding: ActivityAddProductoBinding
-    val productoViewModel: ProductosViewModel
-        get() = (application as MyApp).productoViewModel
+    val productoViewModel: AddProductoViewModel by viewModels()
 
     private lateinit var progressDialog : ProgressDialog
 

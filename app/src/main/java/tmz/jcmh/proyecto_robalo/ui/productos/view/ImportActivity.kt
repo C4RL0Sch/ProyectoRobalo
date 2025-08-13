@@ -16,9 +16,8 @@ import tmz.jcmh.proyecto_robalo.ui.productos.adapter.ProductoResumen_Adapter
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 
 class ImportActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityImportBinding  // Tu binding generado a partir del layout "preview"
-    val viewModel: ProductosViewModel
-        get() = (application as MyApp).productoViewModel
+    private lateinit var binding: ActivityImportBinding
+    val viewModel: ProductosViewModel by viewModels()
 
     // Adapters para cada RecyclerView
     private lateinit var nuevosAdapter: ProductoResumen_Adapter
@@ -62,9 +61,9 @@ class ImportActivity : AppCompatActivity() {
 
         // Botones Confirmar/Cancelar
         binding.btnConfirmar.setOnClickListener {
-            // Llama al método que aplica los cambios en la BD
+            //Llama al método que aplica los cambios en la BD
             viewModel.confirmarCambiosImportacion()
-            finish() // Opcional: salir de esta pantalla si quieres
+            finish()
         }
 
         binding.btnCancelar.setOnClickListener {

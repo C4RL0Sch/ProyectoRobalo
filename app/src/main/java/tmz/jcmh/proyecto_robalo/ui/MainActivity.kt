@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -21,6 +22,7 @@ import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.view.ImportActivity
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
+import tmz.jcmh.proyecto_robalo.ui.usuarios.view.LoginActivity
 import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -28,11 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private var doubleBackToExitPressedOnce = false
 
-    val productoViewModel: ProductosViewModel
-        get() = (application as MyApp).productoViewModel
-
-    val usuariosViewModel: UsuariosViewModel
-        get() = (application as MyApp).usuarioViewModel
+    val productoViewModel: ProductosViewModel by viewModels()
+    val usuariosViewModel: UsuariosViewModel by viewModels()
 
     private lateinit var solicitarPermisos: ActivityResultLauncher<Array<String>>
 

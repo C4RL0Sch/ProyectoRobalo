@@ -10,8 +10,19 @@ import tmz.jcmh.proyecto_robalo.data.models.Producto
 class ProductoRepository() {
     private val db= FirebaseFirestore.getInstance()
     private val productosRef = db.collection("productos")
-    private val _productos = MutableLiveData<List<Producto>>()
+
+    val _productos = MutableLiveData<List<Producto>>()
     val productos : LiveData<List<Producto>> get() = _productos
+
+    //Para la importación desde Excel
+    val _productosNuevos = MutableLiveData<List<Producto>>()
+    val productosNuevos: LiveData<List<Producto>> = _productosNuevos
+
+    val _productosModificados = MutableLiveData<List<Producto>>()
+    val productosModificados: LiveData<List<Producto>> = _productosModificados
+
+    val _productosEliminados = MutableLiveData<List<Producto>>()
+    val productosEliminados: LiveData<List<Producto>> = _productosEliminados
 
     init{
         productosRef.addSnapshotListener{

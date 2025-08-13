@@ -36,7 +36,7 @@ apache-poi={module="org.apache.poi:poi", version.ref="poi"}
 apache-poi-ooxml={module="org.apache.poi:poi-ooxml", version.ref="poi"}
 lifecycle-runtime-ktx={module="androidx.lifecycle:lifecycle-runtime-ktx", version.ref="lifecycle"}
 coroutines={module="org.jetbrains.kotlinx:kotlinx-coroutines-core"}
-fragment={module="androidx.fragment:fragment", version.ref="fragment"}
+fragment={module="androidx.fragment:fragment-ktx", version.ref="fragment"}
 androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
 
 firebase-bom = {module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}

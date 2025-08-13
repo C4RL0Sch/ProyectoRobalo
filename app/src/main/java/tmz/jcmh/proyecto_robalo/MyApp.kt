@@ -6,28 +6,22 @@ import androidx.lifecycle.ViewModelStore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
+import tmz.jcmh.proyecto_robalo.data.repository.UsuarioRepository
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import tmz.jcmh.proyecto_robalo.ui.usuarios.viewmodel.UsuariosViewModel
 
 class MyApp : Application() {
 
-    // Variable para almacenar la instancia del ViewModel
-    lateinit var productoViewModel: ProductosViewModel
-    lateinit var usuarioViewModel: UsuariosViewModel
+    val productoRepository: ProductoRepository by lazy {
+        ProductoRepository()
+    }
+
+    val usuarioRepository: UsuarioRepository by lazy {
+        UsuarioRepository()
+    }
 
     override fun onCreate() {
         super.onCreate()
-
-        // Inicializa el ViewModel usando ViewModelProvider
-        productoViewModel = ViewModelProvider(
-            ViewModelStore(),
-            ViewModelProvider.AndroidViewModelFactory.getInstance(this)
-        ).get(ProductosViewModel::class.java)
-
-        usuarioViewModel = ViewModelProvider(
-            ViewModelStore(),
-            ViewModelProvider.AndroidViewModelFactory.getInstance(this)
-        ).get(UsuariosViewModel::class.java)
-
     }
 }

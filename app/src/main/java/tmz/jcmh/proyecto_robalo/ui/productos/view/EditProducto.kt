@@ -25,11 +25,12 @@ import tmz.jcmh.proyecto_robalo.data.models.Producto
 import tmz.jcmh.proyecto_robalo.databinding.ActivityEditProductoBinding
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import java.io.File
+import androidx.core.net.toUri
+import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.EditProductoViewModel
 
 class EditProducto : AppCompatActivity() {
     private lateinit var binding: ActivityEditProductoBinding
-    val productoViewModel: ProductosViewModel
-        get() = (application as MyApp).productoViewModel
+    val productoViewModel: EditProductoViewModel by viewModels()
 
     private lateinit var producto: Producto
 
@@ -67,7 +68,10 @@ class EditProducto : AppCompatActivity() {
 
         val codigo = intent.getStringExtra("codigo")
 
-        if (codigo != null) {
+        if (codigo == null) {
+            finish()
+        }
+        else{
             val medidas = resources.getStringArray(R.array.Medidas)
             val categorias = resources.getStringArray(R.array.Categorias)
 
@@ -90,8 +94,8 @@ class EditProducto : AppCompatActivity() {
                     binding.img.visibility = View.VISIBLE
                     binding.btnDeleteImg.visibility = View.VISIBLE
 
-                    lastUri = Uri.parse(producto.imgUrl)
-                    uriFoto = Uri.parse(producto.imgUrl)
+                    lastUri = producto.imgUrl!!.toUri()
+                    uriFoto = producto.imgUrl!!.toUri()
 
                     Glide
                         .with(this@EditProducto)
@@ -161,10 +165,9 @@ class EditProducto : AppCompatActivity() {
                     .setTitle("Confirmar eliminación")
                     .setMessage("¿Está seguro de que desea eliminar permanentemente el producto?")
                     .setPositiveButton("Eliminar") { dialog, _ ->
-                        productoViewModel.deleteImageFile(producto.Codigo ?: "")
+                        productoViewModel.deleteCloudImage(producto.Codigo)
                         productoViewModel.Delete(producto)
                         dialog.dismiss()
-                        finish()
                     }
                     .setNegativeButton("Cancelar") { dialog, _ ->
                         dialog.dismiss() // Cierra el diálogo sin hacer nada
@@ -190,6 +193,7 @@ class EditProducto : AppCompatActivity() {
                         binding.img.visibility = View.GONE
                         binding.btnDeleteImg.visibility = View.GONE
                         binding.img.setImageDrawable(null)
+                        uriFoto = null
                         dialog.dismiss()
                     }
                     .setNegativeButton("Cancelar") { dialog, _ ->
@@ -199,10 +203,6 @@ class EditProducto : AppCompatActivity() {
                     .show()
             }
         }
-        else{
-            finish()
-        }
-
     }
 
     private fun save(){
