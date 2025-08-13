@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.FragmentAdminBinding
+import tmz.jcmh.proyecto_robalo.ui.pedidos.view.PedidosFragment
 import tmz.jcmh.proyecto_robalo.ui.productos.view.ProductFragment
 import tmz.jcmh.proyecto_robalo.ui.usuarios.view.UsersFragment
 
@@ -28,6 +29,7 @@ class AdminFragment : Fragment() {
         //INSTANCIACIÓN DE LOS FRAGMENTOS A USAR
         val ProductFragment = ProductFragment()
         val UsersFragment = UsersFragment()
+        val PedidosFragment = PedidosFragment()
 
         //INICIO DEL FRAGMENTO POR DEFECTO
         childFragmentManager.beginTransaction()
@@ -38,6 +40,8 @@ class AdminFragment : Fragment() {
         binding.menuBottom.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.nav_product -> {replaceFragment(ProductFragment)
+                    true}
+                R.id.nav_pedidos ->{replaceFragment(PedidosFragment)
                     true}
                 R.id.nav_users -> {replaceFragment(UsersFragment)
                     true}

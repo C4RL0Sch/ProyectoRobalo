@@ -20,6 +20,7 @@ import com.google.android.material.navigation.NavigationView
 import tmz.jcmh.proyecto_robalo.MyApp
 import tmz.jcmh.proyecto_robalo.R
 import tmz.jcmh.proyecto_robalo.databinding.ActivityMainBinding
+import tmz.jcmh.proyecto_robalo.ui.pedidos.viewmodel.PedidosViewModel
 import tmz.jcmh.proyecto_robalo.ui.productos.view.ImportActivity
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
 import tmz.jcmh.proyecto_robalo.ui.usuarios.view.LoginActivity
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     val productoViewModel: ProductosViewModel by viewModels()
     val usuariosViewModel: UsuariosViewModel by viewModels()
+    val pedidosViewModel: PedidosViewModel by viewModels()
 
     private lateinit var solicitarPermisos: ActivityResultLauncher<Array<String>>
 

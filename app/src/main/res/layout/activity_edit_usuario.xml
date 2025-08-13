@@ -139,92 +139,10 @@
                     android:layout_height="wrap_content"
                     style="@style/EditText"
                     android:hint="Usuario..."
-                    app:layout_constraintBottom_toTopOf="@id/lbl_password"
+                    app:layout_constraintBottom_toTopOf="@id/image_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lbl_User" />
-
-                <TextView
-                    android:id="@+id/lbl_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/LblText"
-                    android:text="Contraseña:"
-                    app:layout_constraintBottom_toTopOf="@id/txt_password"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_User" />
-
-                <EditText
-                    android:id="@+id/txt_password"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    style="@style/EditText"
-                    android:inputType="textPassword"
-                    android:hint="Contraseña del usuario..."
-                    app:layout_constraintBottom_toTopOf="@id/PasswordError"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_password"
-                    tools:ignore="VisualLintTextFieldSize"
-                    />
-
-                <TextView
-                    android:id="@+id/PasswordError"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txt_password"
-                    app:layout_constraintBottom_toTopOf="@id/lbl_password2"
-                    android:layout_marginTop="-15dp"
-                    android:layout_marginBottom="10dp"
-                    android:visibility="gone"
-                    android:text="@string/password_error"
-                    android:layout_marginHorizontal="25dp"
-                    android:justificationMode="inter_word"
-                    android:textSize="18sp"
-                    android:textColor="#D50000"
-                    />
-
-                <TextView
-                    android:id="@+id/lbl_password2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/LblText"
-                    android:text="Confirmar contraseña:"
-                    app:layout_constraintBottom_toTopOf="@id/txt_password2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/PasswordError" />
-
-                <EditText
-                    android:id="@+id/txt_password2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    style="@style/EditText"
-                    android:inputType="textPassword"
-                    android:hint="Contraseña del usuario..."
-                    app:layout_constraintTop_toBottomOf="@id/lbl_password2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/PasswordError2"
-                    tools:ignore="VisualLintTextFieldSize"
-                    />
-
-                <TextView
-                    android:id="@+id/PasswordError2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txt_password2"
-                    app:layout_constraintBottom_toTopOf="@id/image_content"
-                    android:layout_marginTop="-15dp"
-                    android:visibility="gone"
-                    android:text="@string/password_error2"
-                    android:layout_marginHorizontal="25dp"
-                    android:textSize="18sp"
-                    android:textColor="#D50000"
-                    />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/image_content"
@@ -234,7 +152,7 @@
                     android:layout_marginHorizontal="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/PasswordError2"
+                    app:layout_constraintTop_toBottomOf="@id/txt_User"
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView

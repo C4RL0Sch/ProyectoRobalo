@@ -58,7 +58,6 @@ class EditUsuario : AppCompatActivity() {
         }
     }
 
-    //CREACIÓN DE LA VISTA
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditUsuarioBinding.inflate(layoutInflater)
@@ -89,7 +88,6 @@ class EditUsuario : AppCompatActivity() {
                 binding.txtApellidoM.setText(usuario.ApellidoM)
                 binding.txtUser.setText(usuario.Usuario)
                 binding.SpinnerTypeUser.setSelection((usuario.Puesto) - 1)
-                binding.txtPassword.setText(usuario.Password)
 
                 if (usuario.imgUrl != null) {
                     binding.imgNotFound.visibility = View.GONE
@@ -138,7 +136,6 @@ class EditUsuario : AppCompatActivity() {
                         usuario.ApellidoP = binding.txtApellidoP.text.toString()
                         usuario.ApellidoM = binding.txtApellidoM.text.toString()
                         usuario.Usuario = binding.txtUser.text.toString()
-                        usuario.Password = binding.txtPassword.text.toString()
                         usuario.Puesto = (binding.SpinnerTypeUser.selectedItemPosition + 1)
 
                         save()
@@ -209,8 +206,6 @@ class EditUsuario : AppCompatActivity() {
                 .isEmpty() || binding.txtApellidoP.text.toString().isEmpty()
             || binding.txtApellidoM.text.toString()
                 .isEmpty() || binding.txtUser.text.toString().isEmpty()
-            || binding.txtPassword.text.toString().isEmpty()
-            || binding.txtPassword2.text.toString().isEmpty()
         ) {
             Toast.makeText(this, "DEBE LLENAR TODOS LOS CAMPOS", Toast.LENGTH_SHORT).show()
             return false

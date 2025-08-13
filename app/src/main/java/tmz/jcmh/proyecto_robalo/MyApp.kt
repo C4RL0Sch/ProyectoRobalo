@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelStore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import tmz.jcmh.proyecto_robalo.data.repository.PedidoRepository
 import tmz.jcmh.proyecto_robalo.data.repository.ProductoRepository
 import tmz.jcmh.proyecto_robalo.data.repository.UsuarioRepository
 import tmz.jcmh.proyecto_robalo.ui.productos.viewmodel.ProductosViewModel
@@ -19,6 +20,10 @@ class MyApp : Application() {
 
     val usuarioRepository: UsuarioRepository by lazy {
         UsuarioRepository()
+    }
+
+    val pedidoRepository: PedidoRepository by lazy {
+        PedidoRepository()
     }
 
     override fun onCreate() {

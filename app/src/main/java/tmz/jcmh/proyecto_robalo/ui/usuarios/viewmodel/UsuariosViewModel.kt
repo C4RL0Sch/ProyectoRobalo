@@ -27,12 +27,6 @@ class UsuariosViewModel (application: Application) : AndroidViewModel(applicatio
 
     val internalManager = InternalStorageManager()
 
-    fun insert(usuario: Usuario){
-        viewModelScope.launch {
-            repository.insert(usuario)
-        }
-    }
-
     fun saveImage(bitmap: Bitmap, filename: String){
         viewModelScope.launch {
             val Dir = getApplication<Application>().filesDir

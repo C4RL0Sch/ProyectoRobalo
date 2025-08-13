@@ -86,12 +86,6 @@ class AddUsuario : AppCompatActivity() {
                 save(nuevo)
             }
 
-            if (binding.img.drawable != null) {
-                // El ImageView tiene imagen
-                val drawable = binding.img.drawable
-                val bitmap = (drawable as BitmapDrawable).bitmap
-            }
-
             binding.txtNombre.setText("")
             binding.txtApellidoP.setText("")
             binding.txtApellidoM.setText("")

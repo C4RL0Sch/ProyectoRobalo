@@ -9,4 +9,5 @@
     <color name="txt_background">#807F7F</color>
     <color name="back">#121212</color>
     <color name="back_card">#2c2c2e</color>
+    <color name="header">#121212</color>
 </resources>
